@@ -1,0 +1,1 @@
+# TODO 2: create a function that formats data queried to respective format
