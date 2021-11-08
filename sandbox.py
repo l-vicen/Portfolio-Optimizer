@@ -1,16 +1,6 @@
 import streamlit as st
 
 import pandas as pd
-
-from pypfopt.efficient_frontier import EfficientFrontier
-from pypfopt import risk_models
-from pypfopt import expected_returns
-
-st.title("Portfolio Optimizer")
-
-import streamlit as st
-
-import pandas as pd
 from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
@@ -70,4 +60,3 @@ da = DiscreteAllocation(weights, latest_prices, total_portfolio_value=10000)
 allocation, leftover = da.greedy_portfolio()
 st.write("Discrete allocation:", allocation)
 st.write("Funds remaining: ${:.2f}".format(leftover))
-
