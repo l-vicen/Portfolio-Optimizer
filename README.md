@@ -36,6 +36,14 @@ Now, with the repository in hand, I believe this can be useful guidelines based 
         iv. Testing: is our playground, where we can experiment with anything.
         v. Data: is where we have .csv files to play in Testing.
 
+7. Breaking down the TODOs
+
+        7.1. API Query Functions & App Style                                   [ ]
+        7.2. Implement MPT (Covariance & Expected Returns)                     [ ]
+        7.3. Implement Backtesting Feature                                     [ ]
+        7.4. Implement Machine Learning                                        [ ]
+        7.5. Implement Other Methods                                           [ ]
+
 ### Commit Style
 Please also consider writting meaningful messages in your commits. 
 
