@@ -1,1 +1,0 @@
-# TODO 3: Define analysis methodologies
