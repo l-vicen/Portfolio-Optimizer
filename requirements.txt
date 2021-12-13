@@ -29,6 +29,7 @@ ipython-genutils==0.2.0
 ipywidgets==7.6.5
 jedi==0.18.0
 Jinja2==3.0.2
+joblib==1.1.0
 jsonschema==4.2.1
 jupyter-client==7.0.6
 jupyter-core==4.9.1
@@ -74,8 +75,10 @@ pytz-deprecation-shim==0.1.0.post0
 pyzmq==22.3.0
 qdldl==0.1.5.post0
 requests==2.26.0
+scikit-learn==1.0.1
 scipy==1.7.2
 scs==2.1.4
+seaborn==0.11.2
 Send2Trash==1.8.0
 six==1.16.0
 smmap==5.0.0
@@ -83,6 +86,7 @@ streamlit==1.1.0
 tenacity==8.0.1
 terminado==0.12.1
 testpath==0.5.0
+threadpoolctl==3.0.0
 toml==0.10.2
 toolz==0.11.2
 tornado==6.1

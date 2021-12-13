@@ -25,7 +25,7 @@ class Router:
         
         # HOME PAGE
         elif self.page == self.features[1]:
-            mvo.display_mean_variance()
+            mvo.mean_variance_setup()
 
         else:
             pass
@@ -39,4 +39,3 @@ route.display_router()
 route.route()
 
 ho.sidebar.sidebar_contact()
-
