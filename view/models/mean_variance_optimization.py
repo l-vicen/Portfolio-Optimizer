@@ -5,22 +5,22 @@ import controller.plots as myPlots
 from pypfopt import risk_models
 from pypfopt import expected_returns
 from pypfopt import plotting
+from pypfopt import EfficientFrontier
+from pypfopt import DiscreteAllocation
 
 import pandas as pd
 import numpy as np
-
-import seaborn as sns
 import matplotlib.pyplot as plt
 
-from pypfopt import EfficientFrontier
-from pypfopt import DiscreteAllocation
+import plotly.graph_objects as go
+import plotly.express as px
 
 def mean_variance_setup():
     st.title('Mean Variance Optimization')
 
     c1, c2 = st.columns((2, 1))
 
-    c2.header('Explanation')
+    c2.header('About')
     c2.info('::start:: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum')
 
     c1.header('Setup')
@@ -32,6 +32,10 @@ def mean_variance_setup():
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+
+    # Select how to perform the MVO
+    list_covariance_options = c1.selectbox("How should the covariance be calculated?", ["Sample Covariance", "Covariance Shrinkage"])
+
     st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
@@ -47,14 +51,36 @@ def mean_variance_setup():
 
         st.markdown('---')
 
-        st.markdown("### Covariance Matrix")
-        sample_cov = risk_models.sample_cov(df, frequency=252)
-        st.write(sample_cov)
+        if (list_covariance_options == "Sample Covariance"):
+            st.markdown("### Sample Covariance")
+            sample_cov = risk_models.sample_cov(df, frequency=252)
+            st.write(sample_cov)
 
-        figOne, ax = plt.subplots()
-        sns.heatmap(sample_cov.corr(), ax=ax)
-        st.write(figOne)
+            fig = go.Figure(data=go.Heatmap(
+                   z= sample_cov,
+                   x= list_of_stocks,
+                   y= list_of_stocks,
+                   hoverongaps = False, 
+                   type = 'heatmap',
+                   colorscale = 'Viridis'))
 
+            st.plotly_chart(fig)
+            # figOne, ax = plt.subplots()
+            # sns.heatmap(sample_cov.corr(), ax=ax)
+            # st.write(figOne)
+
+        else:
+            st.markdown("### Covariance Schrinkage")
+            S = risk_models.CovarianceShrinkage(df).ledoit_wolf()
+            fig = go.Figure(data=go.Heatmap(
+                   z= S,
+                   x= list_of_stocks,
+                   y= list_of_stocks,
+                   hoverongaps = False),
+                   type = 'heatmap',
+                   colorscale = 'Viridis')
+            st.plotly_chart(fig)
+            
         st.markdown('---')
 
         st.markdown('### Expected Returns')

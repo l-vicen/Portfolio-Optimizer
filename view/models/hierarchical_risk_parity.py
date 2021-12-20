@@ -33,9 +33,6 @@ def hrp_setup():
     # Start Date
     start_date = c1.date_input('Start date')
 
-    # End Date
-    end_date = c1.date_input('End date')
-
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
     st.markdown('---')

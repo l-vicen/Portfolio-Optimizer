@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 
 def display_home():
-    st.title('Data Science in Finance Seminar - WS21/22')
+    st.title('Multi-feature Portfolio Optimizer App (MPOA)')
     col1, col2 = st.columns([1,1])
 
     col1.header('About')
