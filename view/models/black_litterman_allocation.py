@@ -22,8 +22,10 @@ def bla_setup():
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+    st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
+        st.markdown('### Data Retrived')
         # Download price data from desired stocks
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
         st.write(df)
