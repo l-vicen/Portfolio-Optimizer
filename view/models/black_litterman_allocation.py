@@ -23,24 +23,25 @@ def bla_setup():
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
-    # Download price data from desired stocks
-    df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
-    st.write(df)
-    st.markdown('---')
+    if (len(list_of_stocks) > 0): 
+        # Download price data from desired stocks
+        df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
+        st.write(df)
+        st.markdown('---')
 
-    st.markdown('### Historical Adjusted Prices')
-    st.line_chart(df)
+        st.markdown('### Historical Adjusted Prices')
+        st.line_chart(df)
 
-    st.markdown('---')
+        st.markdown('---')
 
-    st.markdown('### Market Capitalization')
-    marketCap = cl.return_market_capitalizations(list_of_stocks)
-    # pd.DataFrame([marketCaps], list(marketCaps.keys()), ["Prices"])
-    # st.write(marketCap)
-    # st.bar_chart(marketCap)
-    st.markdown('---')
+        st.markdown('### Market Capitalization')
+        marketCap = cl.return_market_capitalizations(list_of_stocks)
+        # pd.DataFrame([marketCaps], list(marketCaps.keys()), ["Prices"])
+        # st.write(marketCap)
+        # st.bar_chart(marketCap)
+        st.markdown('---')
 
-    st.markdown('### Calculating Prior')
-    S = risk_models.CovarianceShrinkage(pd.Series(df)).ledoit_wolf()
-    delta = black_litterman.market_implied_risk_aversion(marketCap)
-    st.write(delta)
+        st.markdown('### Calculating Prior')
+        S = risk_models.CovarianceShrinkage(pd.Series(df)).ledoit_wolf()
+        delta = black_litterman.market_implied_risk_aversion(marketCap)
+        st.write(delta)

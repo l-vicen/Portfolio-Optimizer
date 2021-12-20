@@ -39,51 +39,52 @@ def hrp_setup():
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
-    # Download price data from desired stocks
-    df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
+    if (len(list_of_stocks) > 0): 
+        # Download price data from desired stocks
+        df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
 
-    ## financial insights
-    st.write(df)
-    st.markdown('---')
-    st.markdown('### Historical Adjusted Prices')
-    st.line_chart(df)
-    st.markdown('---')
+        ## financial insights
+        st.write(df)
+        st.markdown('---')
+        st.markdown('### Historical Adjusted Prices')
+        st.line_chart(df)
+        st.markdown('---')
 
-    rets = expected_returns.returns_from_prices(df)
+        rets = expected_returns.returns_from_prices(df)
 
-    hrp = HRPOpt(rets)
-    hrp.optimize()
-    weights = hrp.clean_weights()
+        hrp = HRPOpt(rets)
+        hrp.optimize()
+        weights = hrp.clean_weights()
 
-    st.markdown('---')
-    st.markdown('1. TREE CLUSTERING')
+        st.markdown('---')
+        st.markdown('1. TREE CLUSTERING')
 
-    st.write(hrp.tickers)
-    st.write(len(hrp.tickers))
-    st.write(hrp.clusters)
-    st.write(hrp.weights)
+        st.write(hrp.tickers)
+        st.write(len(hrp.tickers))
+        st.write(hrp.clusters)
+        st.write(hrp.weights)
 
-    fig = ff.create_dendrogram(hrp.clusters, orientation='bottom')
-    fig.update_layout(width=800, height=500)
-    st.plotly_chart(fig)
+        fig = ff.create_dendrogram(hrp.clusters, orientation='bottom')
+        fig.update_layout(width=800, height=500)
+        st.plotly_chart(fig)
 
-    st.markdown('---')
-    st.markdown('2. QUASI DIAGONALIZATION')
+        st.markdown('---')
+        st.markdown('2. QUASI DIAGONALIZATION')
 
-    st.write(hrp.cov_matrix)
+        st.write(hrp.cov_matrix)
 
-    # fig = px.scatter_matrix( hrp.cov_matrix, dimensions=hrp.tickers, color="species")
-    # fig.update_traces(diagonal_visible=False)
-    # st.plotly_chart(fig)
+        # fig = px.scatter_matrix( hrp.cov_matrix, dimensions=hrp.tickers, color="species")
+        # fig.update_traces(diagonal_visible=False)
+        # st.plotly_chart(fig)
 
-    st.markdown('---')
-    st.markdown('3. RECURSIVE BISECTION')
-    st.write(weights)
-    st.bar_chart(pd.Series(weights))
+        st.markdown('---')
+        st.markdown('3. RECURSIVE BISECTION')
+        st.write(weights)
+        st.bar_chart(pd.Series(weights))
 
-    st.markdown('---')
-    st.markdown('4. EXPECTED PERFORMANCE')
+        st.markdown('---')
+        st.markdown('4. EXPECTED PERFORMANCE')
 
-    myPlots.plot_performance(hrp.portfolio_performance(verbose=True))
+        myPlots.plot_performance(hrp.portfolio_performance(verbose=True))
 
 
