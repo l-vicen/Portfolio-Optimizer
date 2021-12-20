@@ -1,6 +1,7 @@
 import streamlit as st
 import home as ho
 import mean_variance_optimization as mvo
+import hierarchical_risk_parity as hrp
 
 # Page configurations in App
 st.set_page_config(  # Alternate names: setup_page, page, layout
@@ -13,7 +14,7 @@ st.set_page_config(  # Alternate names: setup_page, page, layout
 class Router:
     def display_router(self):
         # Sidebar attributes
-        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Expected Returns', 'Risk Models', 'Black-Litterman Allocation', 'Hierarchical Risk Parity (HRP)']
+        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Expected Returns', 'Risk Models', 'Black-Litterman Allocation']
         self.page = st.sidebar.selectbox('Choose Algorithm', self.features)
         st.sidebar.markdown('---')
 
@@ -26,6 +27,9 @@ class Router:
         # HOME PAGE
         elif self.page == self.features[1]:
             mvo.mean_variance_setup()
+
+        elif self.page == self.features[2]:
+            hrp.hrp_setup()
 
         else:
             pass
