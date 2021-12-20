@@ -1,7 +1,9 @@
 import streamlit as st
-import home as ho
-import mean_variance_optimization as mvo
-import hierarchical_risk_parity as hrp
+import home
+
+import models.mean_variance_optimization as mvo
+import models.hierarchical_risk_parity as hrp
+import models.black_litterman_allocation as bla
 
 # Page configurations in App
 st.set_page_config(  # Alternate names: setup_page, page, layout
@@ -14,7 +16,7 @@ st.set_page_config(  # Alternate names: setup_page, page, layout
 class Router:
     def display_router(self):
         # Sidebar attributes
-        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Expected Returns', 'Risk Models', 'Black-Litterman Allocation']
+        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Black-Litterman Allocation (BLA)']
         self.page = st.sidebar.selectbox('Choose Algorithm', self.features)
         st.sidebar.markdown('---')
 
@@ -22,7 +24,7 @@ class Router:
     def route(self):
          # HOME PAGE
         if self.page == self.features[0]:
-            ho.display_home()
+            home.display_home()
         
         # HOME PAGE
         elif self.page == self.features[1]:
@@ -31,6 +33,9 @@ class Router:
         elif self.page == self.features[2]:
             hrp.hrp_setup()
 
+        elif self.page == self.features[3]:
+            bla.bla_setup()
+
         else:
             pass
             
@@ -38,8 +43,9 @@ class Router:
 route = Router()
 
 
-ho.sidebar.sidebar_functionality()
+home.sidebar.sidebar_functionality()
 route.display_router()
 route.route()
 
-ho.sidebar.sidebar_contact()
+home.sidebar.sidebar_contact()
+home.sidebar.sidebar_inform_libs()

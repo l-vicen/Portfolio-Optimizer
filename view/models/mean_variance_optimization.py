@@ -1,5 +1,7 @@
 import streamlit as st
-import control as cl
+import controller.control as cl
+import controller.plots as myPlots
+
 from pypfopt import risk_models
 from pypfopt import expected_returns
 from pypfopt import plotting
@@ -19,7 +21,7 @@ def mean_variance_setup():
     c1, c2 = st.columns((2, 1))
 
     c2.header('Explanation')
-    c2.markdown('::start:: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum')
+    c2.info('::start:: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum')
 
     c1.header('Setup')
 
@@ -70,9 +72,8 @@ def mean_variance_setup():
     st.bar_chart(pd.Series(weights))
 
     st.markdown('##### Annual Volatility')
-    annual_volatility = ef.portfolio_performance(verbose=True)
-    st.write(pd.Series(annual_volatility))
-
+    myPlots.plot_performance(ef.portfolio_performance(verbose=True))
+    
     st.markdown('---')
     st.markdown('### Discrete Allocation')
 

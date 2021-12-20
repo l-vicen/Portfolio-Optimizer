@@ -13,6 +13,7 @@ def display_home():
     col2.header('Algorithmic Coverage')
     
 class Sidebar: 
+
     def sidebar_functionality(self):
         # Sidebar attribute Logo
         st.sidebar.image('view/assets/tumSOM_logo.png')
@@ -26,5 +27,10 @@ class Sidebar:
         st.sidebar.markdown('NAME 4')
         st.sidebar.markdown('.....')
         st.sidebar.markdown('---')
+
+    def sidebar_inform_libs(self):
+        st.sidebar.info("<Text Ref. to the libs used>")
+        st.sidebar.markdown('---')
+
 
 sidebar = Sidebar()

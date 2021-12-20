@@ -2,10 +2,9 @@
 import streamlit as st
 from pypfopt import expected_returns
 
-import plots as myPlots
-import control as cl
+import controller.plots as myPlots
+import controller.control as cl
 
-import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import plotly.express as px
 
@@ -19,8 +18,8 @@ from pypfopt import HRPOpt
 def hrp_setup():
     st.title('Hierarchical Risk Parity Optimization')
     c1, c2 = st.columns((2, 1))
-    c2.header('Explanation - how does the Hierarchical Risk Parity works ?')
-    c2.markdown('the hierarchical risk parity have three major steps:' + '\n'
+    c2.header('About')
+    c2.info('the hierarchical risk parity have three major steps:' + '\n'
                 + '1. TREE CLUSTERING' + ' \n'
                 + 'Similar investments are grouped together based on their correlation matrix. This step breaks down the assets in our portfolio into different hierarchical clusters using the famous Hierarchical Tree Clustering algorithm' + '\n'
                 + '2. QUASI DIAGONALIZATION' + '\n'
@@ -71,7 +70,7 @@ def hrp_setup():
     st.markdown('---')
     st.markdown('2. QUASI DIAGONALIZATION')
 
-    # st.write(hrp.cov_matrix)
+    st.write(hrp.cov_matrix)
 
     # fig = px.scatter_matrix( hrp.cov_matrix, dimensions=hrp.tickers, color="species")
     # fig.update_traces(diagonal_visible=False)

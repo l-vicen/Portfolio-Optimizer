@@ -23,3 +23,18 @@ def return_closed_prices(tickers, date):
     return yf.download(tickers, date)['Adj Close']
 
 
+"""
+This fuction downloads the market capitalization
+values for given list of tickers.
+"""
+def return_market_capitalizations(tickers): 
+    marketCaps = {} 
+
+    for i in tickers:
+        stock = yf.Ticker(i)
+        marketCaps[i] = stock.info["marketCap"]
+
+    return marketCaps
+
+
+
