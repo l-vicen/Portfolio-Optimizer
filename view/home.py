@@ -22,14 +22,14 @@ class Sidebar:
     def sidebar_contact(self):
         st.sidebar.markdown('##### Team')
         st.sidebar.markdown('Lucas Perasolo')
-        st.sidebar.markdown('NAME 2')
-        st.sidebar.markdown('NAME 3')
-        st.sidebar.markdown('NAME 4')
+        st.sidebar.markdown('Hans Gottmann')
+        st.sidebar.markdown('Leon Linde')
+        st.sidebar.markdown('Kirill Molchanov')
         st.sidebar.markdown('.....')
         st.sidebar.markdown('---')
 
     def sidebar_inform_libs(self):
-        st.sidebar.info("<Text Ref. to the libs used>")
+        st.sidebar.warning("This app builds upon PyPortfolioOpt library: portfolio optimization in Python, developed by Martin, R. A., (2021). Journal of Open Source Software, 6(61), 3066, https://doi.org/10.21105/joss.03066")
         st.sidebar.markdown('---')
 
 
