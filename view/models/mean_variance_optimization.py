@@ -1,6 +1,8 @@
 import streamlit as st
 import controller.control as cl
 import controller.plots as myPlots
+import models_dependencies.expected_returns as expectedReturn
+import models_dependencies.covariances as riskMatrix
 
 from pypfopt import risk_models
 from pypfopt import expected_returns
@@ -35,10 +37,12 @@ def mean_variance_setup():
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
     # Select how to perform the MVO
-    list_covariance_options = c1.selectbox("How should the covariance be calculated?", ["Sample Covariance", "Covariance Shrinkage: Ledoit Wolf", "Semi Covariance", "Exponential Covariance", "Ledoitn Wolf Constant Variance", "Ledoit Wolf Single Factor", "Ledoit Wolf Constant Correlation", "Oracle Approximatiion"])
+    covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
+    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods)
 
     # Expected Return Method
-    list_expected_returns = c1.selectbox("How should the expected return be calculated?", ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"])
+    expected_returns_methods = ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"]
+    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods)
 
     st.markdown('---')
 
@@ -55,45 +59,40 @@ def mean_variance_setup():
 
         st.markdown('---')
 
-        if (list_covariance_options == "Sample Covariance"):
-            st.markdown("### Sample Covariance")
-            sample_cov = risk_models.sample_cov(df, frequency=252)
-            st.write(sample_cov)
 
-            fig = go.Figure(data=go.Heatmap(
-                   z= sample_cov,
-                   x= list_of_stocks,
-                   y= list_of_stocks,
-                   hoverongaps = False, 
-                   type = 'heatmap',
-                   colorscale = 'Viridis'))
+        """[PART 1] In this part we calculate the 
+        covariance matrix for given price dataframe
+        and according to specific covariance method 
+        selected. """
 
-            st.plotly_chart(fig)
-            # figOne, ax = plt.subplots()
-            # sns.heatmap(sample_cov.corr(), ax=ax)
-            # st.write(figOne)
+        st.markdown("### Covariance Mtrix")
+        covarianceMatrixCalculated = riskMatrix.calculate_covariance_according_to(df, covariance_method_choosen)
+        st.write(covarianceMatrixCalculated)
 
-        else:
-            st.markdown("### Covariance Schrinkage")
-            S = risk_models.CovarianceShrinkage(df).ledoit_wolf()
-            fig = go.Figure(data=go.Heatmap(
-                   z= S,
-                   x= list_of_stocks,
-                   y= list_of_stocks,
-                   hoverongaps = False),
-                   type = 'heatmap',
-                   colorscale = 'Viridis')
-            st.plotly_chart(fig)
-            
+        fig = go.Figure(data=go.Heatmap(
+                z= covarianceMatrixCalculated,
+                x= list_of_stocks,
+                y= list_of_stocks,
+                hoverongaps = False, 
+                type = 'heatmap',
+                colorscale = 'Viridis'))
+
+        st.plotly_chart(fig)            
         st.markdown('---')
+
+
+        """[PART 2] In this part we calculate the 
+        expected return for given price dataframe
+        and according to specific expected return
+        method selected. """
 
         st.markdown('### Expected Returns')
-        mu = expected_returns.capm_return(df)
-
-        st.write(mu)
-        st.bar_chart(mu)
-
+        expectedReturnCalculate = expectedReturn.calculate_expected_return_according_to(df, expected_return_method_choosen)
+        st.write(expectedReturnCalculate)
+        st.bar_chart(expectedReturnCalculate)
         st.markdown('---')
+
+
         st.markdown('### Weight Distribution')
         S = risk_models.CovarianceShrinkage(df).ledoit_wolf()
         # You don't have to provide expected returns in this case

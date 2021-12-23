@@ -1,6 +1,5 @@
 # load needed packages
 import streamlit as st
-from pypfopt import expected_returns
 
 import controller.plots as myPlots
 import controller.control as cl
@@ -9,8 +8,9 @@ import plotly.figure_factory as ff
 import plotly.express as px
 
 import pandas as pd
-import numpy as np
+import datetime
 
+from pypfopt import expected_returns
 from pypfopt import expected_returns
 from pypfopt import HRPOpt
 
@@ -31,10 +31,19 @@ def hrp_setup():
     invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50)
 
     # Start Date
-    start_date = c1.date_input('Start date')
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+
+    # Select how to perform the MVO
+    covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
+    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods)
+
+    # Expected Return Method
+    expected_returns_methods = ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"]
+    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods)
+
     st.markdown('---')
 
     if (len(list_of_stocks) > 0): 

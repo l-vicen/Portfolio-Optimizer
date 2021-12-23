@@ -16,7 +16,7 @@ st.set_page_config(  # Alternate names: setup_page, page, layout
 class Router:
     def display_router(self):
         # Sidebar attributes
-        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Black-Litterman Allocation (BLA)', 'Backtesting']
+        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Black-Litterman Allocation (BLA)', 'Backtesting', 'Edu-examples']
         self.page = st.sidebar.selectbox('Choose Algorithm', self.features)
         st.sidebar.markdown('---')
 
@@ -34,6 +34,12 @@ class Router:
             hrp.hrp_setup()
 
         elif self.page == self.features[3]:
+            bla.bla_setup()
+
+        elif self.page == self.features[4]:
+            bla.bla_setup()
+
+        elif self.page == self.features[5]:
             bla.bla_setup()
 
         else:
