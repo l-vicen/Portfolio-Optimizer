@@ -1,14 +1,16 @@
 import streamlit as st
+from streamlit.script_runner import StopException
+from yfinance import ticker
 import controller.control as cl
 import controller.plots as myPlots
+
 import models_dependencies.expected_returns as expectedReturn
 import models_dependencies.covariances as riskMatrix
+import models_dependencies.objectives as objective
 
-from pypfopt import risk_models
-from pypfopt import expected_returns
-from pypfopt import plotting
 from pypfopt import EfficientFrontier
 from pypfopt import DiscreteAllocation
+from pypfopt import plotting
 
 import pandas as pd
 import numpy as np
@@ -16,9 +18,9 @@ import matplotlib.pyplot as plt
 import datetime
 
 import plotly.graph_objects as go
-import plotly.express as px
 
 def mean_variance_setup():
+    st.set_option('deprecation.showPyplotGlobalUse', False)
     st.title('Mean Variance Optimization')
 
     c1, c2 = st.columns((2, 1))
@@ -27,8 +29,6 @@ def mean_variance_setup():
     c2.info('Mean-Variance Optimization helps investors understand the trade-off between expected returns and risk for a given portfolio. Here: ')
 
     c1.header('Setup')
-
-    invest_cash = c1.number_input('Purchase Power', min_value = 10, max_value = 100000000, value = 10, step = 50)
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
@@ -44,10 +44,30 @@ def mean_variance_setup():
     expected_returns_methods = ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"]
     expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods)
 
+    # Pick Objective Functions
+    objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
+    objective_function_choosen = c1.selectbox("What is your optimization objective?", objective_functions)
+
+    regularization_options = ["Yes", "No"]
+    add_regularization = c1.select_slider("Shoult the optimization have L2 Regularization?", regularization_options, value = "No")
+
+    if (add_regularization == "Yes"):
+        tunning_factor_choosen = c1.slider("Choose L2 Tunning Factor", min_value=0.1, max_value=1.0)
+    else:
+        tunning_factor_choosen = 0
+
+    # Pick Objective Functions Complement
+    objective_functions_complement = ["Mininimising Transaction Costs", "Custom Convex Objectives", "Custom Non-convex Objectives"]
+    complement_to_objective_function_choosen = c1.selectbox("Do you want to complement your objective by one of this complement options?", objective_functions_complement, help = "None")
+
     st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
-        # Download price data from desired stocks
+
+        """[PART 0] In this part we retrieve 
+        and plot data from yahooFinanace. The
+        data is on the adjusted closed prices."""
+
         st.markdown('### Data Retireved')
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
         st.write(df)
@@ -59,18 +79,18 @@ def mean_variance_setup():
 
         st.markdown('---')
 
-
         """[PART 1] In this part we calculate the 
         covariance matrix for given price dataframe
         and according to specific covariance method 
         selected. """
 
-        st.markdown("### Covariance Mtrix")
+        st.markdown("### Correlation Matrix")
         covarianceMatrixCalculated = riskMatrix.calculate_covariance_according_to(df, covariance_method_choosen)
-        st.write(covarianceMatrixCalculated)
+        correlationMatrixCalculated = riskMatrix.map_cov_to_corr(covarianceMatrixCalculated)
+        st.write(correlationMatrixCalculated)
 
         fig = go.Figure(data=go.Heatmap(
-                z= covarianceMatrixCalculated,
+                z= correlationMatrixCalculated,
                 x= list_of_stocks,
                 y= list_of_stocks,
                 hoverongaps = False, 
@@ -87,77 +107,94 @@ def mean_variance_setup():
         method selected. """
 
         st.markdown('### Expected Returns')
-        expectedReturnCalculate = expectedReturn.calculate_expected_return_according_to(df, expected_return_method_choosen)
-        st.write(expectedReturnCalculate)
-        st.bar_chart(expectedReturnCalculate)
+        expectedReturnCalculated = expectedReturn.calculate_expected_return_according_to(df, expected_return_method_choosen)
+        st.write(expectedReturnCalculated)
+        st.bar_chart(expectedReturnCalculated)
         st.markdown('---')
 
+        """[PART 3] In this part we run the optimization
+        setup selected in setup. """
 
-        st.markdown('### Weight Distribution')
-        S = risk_models.CovarianceShrinkage(df).ledoit_wolf()
-        # You don't have to provide expected returns in this case
-        ef = EfficientFrontier(None, S, weight_bounds=(None, None))
-        ef.min_volatility()
-        weights = ef.clean_weights()
+        st.markdown('### Asset Distribution')
 
-        st.write(weights)
-        st.bar_chart(pd.Series(weights))
+        ef = objective.calculate_asset_distribution_according_to(objective_function_choosen, add_regularization, tunning_factor_choosen ,expected_returns = expectedReturnCalculated, covariance_matrix = covarianceMatrixCalculated)
+
+        asset_distribution = ef.clean_weights()
+        st.write(asset_distribution)
+        st.bar_chart(pd.Series(asset_distribution))
+        st.markdown('---')
+
+        """[PART 4] Spare Porfolio Performance 
+        Overview based on 3 KPIs: expected return, 
+        annual volatility and sharpe ratio."""
 
         st.markdown('##### Annual Volatility')
         myPlots.plot_performance(ef.portfolio_performance(verbose=True))
-        
         st.markdown('---')
+        
+        """[PART 5] Discretionizing asset distribution
+        such that in case brokeragge does not allow
+        partial shares."""
+
         st.markdown('### Discrete Allocation')
 
         latest_prices = df.iloc[-1]  # prices as of the day you are allocating
-        da = DiscreteAllocation(weights, latest_prices, total_portfolio_value = invest_cash, short_ratio = 0.3)
-        alloc, leftover = da.lp_portfolio()
+        discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value=20000, short_ratio=0.3)
+        allocation, leftover = discreteAllocation.lp_portfolio()
         st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
-        st.bar_chart(pd.Series(alloc))
+        st.write(allocation)
 
         st.markdown('---')
         st.markdown('### Efficient Frontier')
 
         n_samples = 1000
-        w = np.random.dirichlet(np.ones(len(mu)), n_samples)
-        rets = w.dot(mu)
-        stds = np.sqrt((w.T * (S @ w.T)).sum(axis=0))
+
+        weight = np.random.dirichlet(np.ones(len(expectedReturnCalculated)), n_samples).round(2)
+
+        weigths_df = pd.DataFrame(weight)
+        weigths_df['String Weight'] = weigths_df[weigths_df.columns[0:]].apply( lambda x: ', '.join(x.dropna().astype(str)), axis=1)
+        #st.write("Weights:", weigths_df)
+
+        rets = weight.dot(expectedReturnCalculated)
+        stds = np.sqrt((weight.T * (covarianceMatrixCalculated @ weight.T)).sum(axis=0))
         sharpes = rets / stds
 
-        print("Sample portfolio returns:", rets)
-        print("Sample portfolio volatilities:", stds)
+        # st.write("Sample portfolio returns:", rets)
+        # st.write("Sample portfolio volatilities:", stds)
+        # st.write(sharpes)
 
-        # Plot efficient frontier with Monte Carlo sim
-        ef = EfficientFrontier(mu, S)
+        #-- Plot the risk vs. return of randomly generated portfolios
+        #-- Convert the list from before into an array for easy plotting
+        ef_df = pd.DataFrame(list(zip(stds, rets, sharpes)), columns=['Volatility','Returns', 'Sharpes'])
+        #st.write(ef_df)
 
-        fig, ax = plt.subplots()
-        plotting.plot_efficient_frontier(ef, ax=ax, show_assets=False)
+        df_result = pd.concat([ef_df, weigths_df], axis=1)
 
-        # Find and plot the tangency portfolio
-        # ef.max_sharpe()
-        ret_tangent, std_tangent, _ = ef.portfolio_performance()
-        ax.scatter(std_tangent, ret_tangent, marker="*", s = 10, c="r", label="Max Sharpe")
+        #st.write(df_result)
+        tickesString = '[' + ', '.join(list_of_stocks) + ']'
+        df_result['Portfolio'] = tickesString
 
-        # Plot random portfolios
-        ax.scatter(stds, rets, marker=".", c=sharpes, cmap="viridis_r")
-
-        # Format
-        ax.set_title("Efficient Frontier with random portfolios")
-        ax.legend()
-        plt.tight_layout()
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x = ef_df['Volatility'], y = ef_df['Returns'], 
+                            marker = dict(color = ef_df['Sharpes'], 
+                                        showscale=True, 
+                                        size=7,
+                                        line=dict(width=1),
+                                        colorscale="RdBu",
+                                        colorbar=dict(title="Sharpe<br>Ratio")
+                                        ), 
+                            mode='markers',
+                            text=[df_result['Portfolio'][i] + "<br>" + '[' + df_result['String Weight'][i] + ']'  for i in range(n_samples)]))
+        
+        fig.update_layout(template='plotly_white',
+                        xaxis=dict(title='Annualised Risk (Volatility)'),
+                        yaxis=dict(title='Annualised Return'),
+                        title='Sample of Random Portfolios',
+                        width=850,
+                        height=500)
+        fig.update_layout(coloraxis_colorbar=dict(title="Sharpe Ratio"))
         st.plotly_chart(fig)
 
-        st.markdown('---')
-        st.markdown('### Minimizing Risk & Target Return')
-        ef = EfficientFrontier(mu, S, weight_bounds=(None, None))
-
-        # TODO: Add objective which is some sort of constraint (e.g. sector)
-
-        ef.efficient_return(target_return=0.07, market_neutral=True)
-        weights = ef.clean_weights()
-        st.write('New Weights')
-        st.write(pd.Series(weights))
-        st.bar_chart(pd.Series(weights))
 
 
 

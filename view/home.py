@@ -20,12 +20,14 @@ class Sidebar:
         st.sidebar.markdown('---')
 
     def sidebar_contact(self):
-        st.sidebar.markdown('##### Team')
-        st.sidebar.markdown('Lucas Perasolo')
+        st.sidebar.markdown('##### Contributors')
+        st.sidebar.markdown('André Leibrant')
+        st.sidebar.markdown('David Gewalt')
         st.sidebar.markdown('Hans Gottmann')
-        st.sidebar.markdown('Leon Linde')
         st.sidebar.markdown('Kirill Molchanov')
-        st.sidebar.markdown('.....')
+        st.sidebar.markdown('Leon Linde')
+        st.sidebar.markdown('Lucas Perasolo')
+        st.sidebar.markdown('Zhiyan Chen')
         st.sidebar.markdown('---')
 
     def sidebar_inform_libs(self):

@@ -3,7 +3,7 @@ from pypfopt import risk_models
 def calculate_covariance_according_to(prices, method):
 
     if (method == "Sample Covariance"):
-        return risk_models.sample_cov(prices, frequency=252)
+        return risk_models.sample_cov(prices)
     
     elif (method == "Semi Covariance"):
         return risk_models.semicovariance(prices)
@@ -25,3 +25,6 @@ def calculate_covariance_according_to(prices, method):
 
     else:
         return risk_models.risk_matrix(prices, "oracle_approximating")
+
+def map_cov_to_corr(covarianceMatrixCalculated):
+    return risk_models.cov_to_corr(covarianceMatrixCalculated)
