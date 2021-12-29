@@ -179,16 +179,22 @@ def mean_variance_setup():
                                         colorbar=dict(title="Sharpe<br>Ratio")
                                         ), 
                             mode='markers',
+                            showlegend=False,
                             text=[df_result['Portfolio'][i] + "<br>" + '[' + df_result['String Weight'][i] + ']'  for i in range(n_samples)]))
-        
-        optimal = pd.DataFrame(ef.portfolio_performance(verbose=True), columns=['Results'])
-        
-        fig.add_trace(go.Scatter(x = optimal['Results'], y = optimal['Results'],        # Edited
+
+        optimal = ef.portfolio_performance(verbose=True)
+        optimalList = list(optimal)
+
+        for t in range(len(optimalList)):
+            optimalList[t] = optimalList[t].round(2)
+
+        fig.add_trace(go.Scatter(x = [optimalList[1]], y = [optimalList[0]],   
                              mode = 'markers',
-                             marker = dict(color='red', size = 12),
+                             marker = dict(color='gold', size = 10, symbol = 'diamond'), 
                              name = 'Optimal Portfolio'))
 
         fig.update_layout(template='plotly_white',
+                        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
                         xaxis=dict(title='Annualised Risk (Volatility)'),
                         yaxis=dict(title='Annualised Return'),
                         title='Sample of Random Portfolios',
