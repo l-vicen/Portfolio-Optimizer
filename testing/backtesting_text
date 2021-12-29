@@ -1,0 +1,1 @@
+Portfolio backtesting seeks to determine the effectiveness of a trading strategy using historical data. The method takes the portfolio with the selected assets and calculated allocation from the corresponding strategy and compares the performance to the benchmark S&P 500 regarding the given time period.
