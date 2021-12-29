@@ -4,6 +4,7 @@ import home
 import models.mean_variance_optimization as mvo
 import models.hierarchical_risk_parity as hrp
 import models.black_litterman_allocation as bla
+import models.backtesting as bt
 
 # Page configurations in App
 st.set_page_config(  # Alternate names: setup_page, page, layout
@@ -37,7 +38,7 @@ class Router:
             bla.bla_setup()
 
         else:
-            pass
+            bt.backtesting_setup()
             
 # Initiating class
 route = Router()

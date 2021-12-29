@@ -36,4 +36,11 @@ def return_market_capitalizations(tickers):
     return marketCaps
 
 
+"""
+This function is Andre's data query for the
+backtesting feature.
+"""
+def return_closed_prices_time_interval(ticker, start, end):
+   return yf.download(ticker, start=start, end=end)
+
 
