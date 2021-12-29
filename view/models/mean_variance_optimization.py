@@ -1,6 +1,4 @@
 import streamlit as st
-from streamlit.script_runner import StopException
-from yfinance import ticker
 import controller.control as cl
 import controller.plots as myPlots
 
@@ -8,13 +6,10 @@ import models_dependencies.expected_returns as expectedReturn
 import models_dependencies.covariances as riskMatrix
 import models_dependencies.objectives as objective
 
-from pypfopt import EfficientFrontier
 from pypfopt import DiscreteAllocation
-from pypfopt import plotting
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import datetime
 
 import plotly.graph_objects as go
@@ -186,6 +181,13 @@ def mean_variance_setup():
                             mode='markers',
                             text=[df_result['Portfolio'][i] + "<br>" + '[' + df_result['String Weight'][i] + ']'  for i in range(n_samples)]))
         
+        optimal = pd.DataFrame(ef.portfolio_performance(verbose=True), columns=['Results'])
+        
+        fig.add_trace(go.Scatter(x = optimal['Results'], y = optimal['Results'],        # Edited
+                             mode = 'markers',
+                             marker = dict(color='red', size = 12),
+                             name = 'Optimal Portfolio'))
+
         fig.update_layout(template='plotly_white',
                         xaxis=dict(title='Annualised Risk (Volatility)'),
                         yaxis=dict(title='Annualised Return'),
