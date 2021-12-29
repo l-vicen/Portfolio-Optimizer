@@ -102,4 +102,3 @@ webencodings==0.5.1
 widgetsnbextension==3.5.2
 yarg==0.1.9
 yfinance==0.1.64
-gsheetsdb==0.1.13

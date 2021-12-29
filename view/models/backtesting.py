@@ -89,17 +89,4 @@ def backtesting_setup():
 
         st.plotly_chart(fig2)
 
-        from gsheetsdb import connect
-        conn = connect()
-
-        def run_query(query):
-            rows = conn.execute(query, headers=1)
-            return rows
-
-        sheet_url = st.secrets["https://docs.google.com/spreadsheets/d/1hz3NbUogfnWfBO81as3kecdsUKIFPv5uoiIzT2I56nc/edit#gid=0"]
-        rows = run_query(f'SELECT * FROM "{sheet_url}"')
-
-        for row in rows:
-            st.write(f"{row.test}")
-
 
