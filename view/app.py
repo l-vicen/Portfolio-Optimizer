@@ -38,7 +38,7 @@ class Router:
             bla.bla_setup()
 
         else:
-            bt.backtesting_setup()
+            pass
             
 # Initiating class
 route = Router()

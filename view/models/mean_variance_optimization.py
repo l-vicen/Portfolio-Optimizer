@@ -6,10 +6,13 @@ import models_dependencies.expected_returns as expectedReturn
 import models_dependencies.covariances as riskMatrix
 import models_dependencies.objectives as objective
 
+import models.backtesting as backTest
+
 from pypfopt import DiscreteAllocation
 
 import pandas as pd
 import numpy as np
+import yfinance as yf
 import datetime
 
 import plotly.graph_objects as go
@@ -27,6 +30,12 @@ def mean_variance_setup():
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
+
+    # End Date 
+    end_date = c1.date_input('End date', datetime.date(2021, 12, 1))
+
+    # Initial investment
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
@@ -50,10 +59,6 @@ def mean_variance_setup():
         tunning_factor_choosen = c1.slider("Choose L2 Tunning Factor", min_value=0.1, max_value=1.0)
     else:
         tunning_factor_choosen = 0
-
-    # Pick Objective Functions Complement
-    objective_functions_complement = ["Mininimising Transaction Costs", "Custom Convex Objectives", "Custom Non-convex Objectives"]
-    complement_to_objective_function_choosen = c1.selectbox("Do you want to complement your objective by one of this complement options?", objective_functions_complement, help = "None")
 
     st.markdown('---')
 
@@ -202,6 +207,15 @@ def mean_variance_setup():
                         height=500)
         fig.update_layout(coloraxis_colorbar=dict(title="Sharpe Ratio"))
         st.plotly_chart(fig)
+
+        st.markdown('---')
+
+        weightValues = asset_distribution.values()
+        weightValuesList = list(weightValues)
+
+        backTest.backtesting_setup(start_date, end_date, list_of_stocks, weightValuesList, init_investment)
+        
+
 
 
 
