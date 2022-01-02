@@ -29,7 +29,7 @@ def mean_variance_setup():
     c1.header('Setup')
 
     # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # End Date 
     end_date = c1.date_input('End date', datetime.date(2021, 12, 1))
