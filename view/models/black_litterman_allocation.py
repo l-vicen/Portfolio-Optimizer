@@ -31,6 +31,9 @@ def bla_setup():
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
     covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods)
+
+    market_prices = cl.return_closed_prices("SPY", start_date).dropna(how="all")
+    #st.write(market_prices.head())
     
     st.markdown('---')
 
@@ -57,11 +60,11 @@ def bla_setup():
 
         st.markdown('### Calculating Prior')
         S = risk_models.CovarianceShrinkage(df, frequency=len(index)).ledoit_wolf()
-        delta = black_litterman.market_implied_risk_aversion(df)
+        delta = black_litterman.market_implied_risk_aversion(market_prices)
         st.write(delta)
         st.markdown('---')
 
-        st.markdown("### Covariance Mtrix")
+        st.markdown("### Covariance Matrix")
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(S)
         st.write(S)
 
@@ -88,7 +91,6 @@ def bla_setup():
         st.markdown('---')
 
         st.markdown('### Absolute views / expectations')
-        # TODO: Can we move the input buttons here???
         viewdict = {}
         for i in list_of_stocks:
             viewdict[i] = st.number_input('view for ' + i, min_value=-0.001, max_value=10000.0, value=0.01, step=0.1)
@@ -100,13 +102,12 @@ def bla_setup():
         st.markdown('---')
 
         st.markdown('### View confidences')
-        # TODO: Can we move the input buttons here???
         confidences = {}
         for i in list_of_stocks:
             confidences[i] = st.slider('confidence for the view ' + i, min_value=0.01, max_value=1.0, value=0.01, step=0.1)
         data_items = confidences. items()
         data_list = list(data_items)
-        confidencesDF = pd.DataFrame(data_list, columns = ['Company', 'Confidence'])
+        confidencesDF = pd. DataFrame(data_list, columns = ['Company', 'Confidence'])
         st.write(confidencesDF)
 
         values_column = list(confidences.values()) # It is only the values list from the confidences dict, it is required like that by later methods from pyport.
@@ -114,16 +115,15 @@ def bla_setup():
         st.markdown('---')
 
         # TODO: Add variance of the view to the view DF
-        st.markdown('### Variance of the views')
-        omega = np.diag(bl.omega)
-        st.write(omega)
+        st.markdown('### Omega')
+        omegaSelf = np.diag(bl.omega)
+        st.write(omegaSelf)
+        omega=bl.omega
         st.markdown('---')
 
         st.markdown('### Posterior estimates')
-        # TODO: solve the issue with: ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
         # We are using the shortcut to automatically compute market-implied prior
-        #bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
-        #bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
+        bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
         # Posterior estimate of returns
         ret_bl = bl.bl_returns()
         #st.write(ret_bl)
