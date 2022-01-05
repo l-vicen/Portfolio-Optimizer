@@ -1,6 +1,6 @@
 # Dependencies
 import streamlit as st
-import pandas as pd
+from gsheetsdb import connect
 
 def display_home():
     st.title('Multi-feature Portfolio Optimizer App (MPOA)')
@@ -16,7 +16,23 @@ def display_home():
     st.title("Public Dashboard")
     # Create a connection object.
     st.secrets["public_gsheets_url"]
-    
+
+
+    # Create a connection object.
+    conn = connect()
+
+    @st.cache(ttl=600)
+    def run_query(query):
+        rows = conn.execute(query, headers=1)
+        return rows
+
+    sheet_url = st.secrets["public_gsheets_url"]
+    rows = run_query(f'SELECT * FROM "{sheet_url}"')
+
+    # Print results.
+    for row in rows:
+        st.write(f"{row.name}")
+        
 class Sidebar: 
 
     def sidebar_functionality(self):
