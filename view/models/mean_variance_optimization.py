@@ -214,7 +214,6 @@ def mean_variance_setup():
         weightValuesList = list(weightValues)
 
         backTest.backtesting_setup(start_date, end_date, list_of_stocks, weightValuesList, init_investment)
-        
 
 
 
