@@ -12,7 +12,6 @@ from pypfopt import DiscreteAllocation
 
 import pandas as pd
 import numpy as np
-import yfinance as yf
 import datetime
 
 import plotly.graph_objects as go
@@ -143,6 +142,9 @@ def mean_variance_setup():
         allocation, leftover = discreteAllocation.lp_portfolio()
         st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
         st.write(allocation)
+
+         
+        """[PART 6] Plotting simulated portfolios"""
 
         st.markdown('---')
         st.markdown('### Efficient Frontier')
