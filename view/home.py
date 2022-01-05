@@ -13,6 +13,7 @@ def display_home():
     col2.header('Algorithmic Coverage')
 
 
+    # TODO: Public Dashboard implementation goes here 
     st.title("Public Dashboard")
     # Create a connection object.
     st.secrets["public_gsheets_url"]
@@ -31,7 +32,7 @@ def display_home():
 
     # Print results.
     for row in rows:
-        st.write(f"{row.name}")
+        st.write(f"{row.tickers}")
         
 class Sidebar: 
 
