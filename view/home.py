@@ -11,6 +11,11 @@ def display_home():
     col1.markdown(message, unsafe_allow_html = True)
 
     col2.header('Algorithmic Coverage')
+
+
+    st.title("Public Dashboard")
+    # Create a connection object.
+    st.secrets["public_gsheets_url"]
     
 class Sidebar: 
 
