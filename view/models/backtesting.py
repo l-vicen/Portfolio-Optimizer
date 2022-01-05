@@ -1,4 +1,3 @@
-from re import template
 import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
@@ -54,7 +53,7 @@ def backtesting_setup(start, end, tickers, allocations, init_investment):
     # Visualize portfolio value and compare it to SPY benchmark
     fig1 = go.Figure()
     fig1.add_trace(go.Scatter(x=portfolio_val.index, y=portfolio_val['Portfolio Total'], name='Portfolio Total'))
-    fig1.add_trace(go.Scatter(x=SPY.index, y=SPY['SPY Total'], name='SPY Total'))
+    fig1.add_trace(go.Scatter(x=SPY.index, y=SPY['SPY Total'], name='Benchmark Total'))
     fig1.update_layout(title="Portfolio Value",  width=850, height=500)
 
     st.plotly_chart(fig1)
@@ -62,7 +61,9 @@ def backtesting_setup(start, end, tickers, allocations, init_investment):
     # Visualize return in %
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(x=portfolio_val.index, y=portfolio_val['Cum Return %'], name='Portfolio Cumulative Return %'))
-    fig2.add_trace(go.Scatter(x=SPY.index, y=SPY['Cum Return %'], name='SPY Cumulative Return %'))
-    fig2.update_layout(title="Cumulative Return % (Portfolio vs SPY)", width=850, height=500)
+    fig2.add_trace(go.Scatter(x=SPY.index, y=SPY['Cum Return %'], name='Benchmark Cumulative Return %'))
+    fig2.update_layout(title="Cumulative Return % (Portfolio vs Benchmark)", width=850, height=500)
 
     st.plotly_chart(fig2)
+
+
