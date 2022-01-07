@@ -16,6 +16,8 @@ import datetime
 
 import plotly.graph_objects as go
 
+from inform import Descriptions
+
 def mean_variance_setup():
     st.set_option('deprecation.showPyplotGlobalUse', False)
     st.title('Mean Variance Optimization')
@@ -23,7 +25,7 @@ def mean_variance_setup():
     c1, c2 = st.columns((2, 1))
 
     c2.header('About')
-    c2.info('Mean-Variance Optimization helps investors understand the trade-off between expected returns and risk for a given portfolio. Here: ')
+    c2.info(Descriptions.MVO)
 
     c1.header('Setup')
 
@@ -127,8 +129,9 @@ def mean_variance_setup():
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio."""
 
-        st.markdown('##### Annual Volatility')
+        st.markdown('##### Annual Performance Expectations')
         myPlots.plot_performance(ef.portfolio_performance(verbose=True))
+        c2.info(Descriptions.SHARPE_RATIO)
         st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
