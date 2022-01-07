@@ -4,7 +4,9 @@ import home
 import models.mean_variance_optimization as mvo
 import models.hierarchical_risk_parity as hrp
 import models.black_litterman_allocation as bla
-import models.backtesting as bt
+
+import open_project 
+
 
 # Page configurations in App
 st.set_page_config(  # Alternate names: setup_page, page, layout
@@ -17,7 +19,7 @@ st.set_page_config(  # Alternate names: setup_page, page, layout
 class Router:
     def display_router(self):
         # Sidebar attributes
-        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Black-Litterman Allocation (BLA)']
+        self.features = ['Home Page', 'Mean-Variance Optimization (MPT)', 'Hierarchical Risk Parity (HRP)', 'Black-Litterman Allocation (BLA)', 'Open Project (Feedbacks)']
         self.page = st.sidebar.selectbox('Choose Algorithm', self.features)
         st.sidebar.markdown('---')
 
@@ -39,7 +41,7 @@ class Router:
             bla.bla_setup()
 
         else:
-            pass
+            open_project.visualize_feedbacks()
             
 # Initiating class
 route = Router()
