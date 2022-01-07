@@ -14,18 +14,14 @@ from pypfopt import expected_returns
 from pypfopt import expected_returns
 from pypfopt import HRPOpt
 
+from view.inform import Descriptions
+
 
 def hrp_setup():
     st.title('Hierarchical Risk Parity Optimization')
     c1, c2 = st.columns((2, 1))
     c2.header('About')
-    c2.info('the hierarchical risk parity have three major steps:' + '\n'
-                + '1. TREE CLUSTERING' + ' \n'
-                + 'Similar investments are grouped together based on their correlation matrix. This step breaks down the assets in our portfolio into different hierarchical clusters using the famous Hierarchical Tree Clustering algorithm' + '\n'
-                + '2. QUASI DIAGONALIZATION' + '\n'
-                + 'It is nothing more than a simple seriation algorithm, a statistical technique which is used to rearrange the data to show the inherent clusters clearly' + '\n'
-                + '3. RECURSIVE BISECTION' + '\n'
-                + 'The final step of the algorithm then calculates the weight for each of the assets using a recursive bi-sectioning procedure of the reordered covariance matrix')
+    c2.info(Descriptions.HRP)
     c1.header('Setup')
 
     invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50)
