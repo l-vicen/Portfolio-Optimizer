@@ -12,7 +12,7 @@ from pypfopt import EfficientFrontier, objective_functions
 import plotly.graph_objects as go
 import plotly.express as px
 
-from view.inform import Descriptions
+from inform import Descriptions
 
 def bla_setup():
     st.title('Black-Litterman Allocation')
@@ -21,7 +21,7 @@ def bla_setup():
 
     c2.header('About')
     c2.info(Descriptions.BLA)
-    
+
     c1.header('Setup')
 
     # Start Date

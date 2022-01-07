@@ -14,7 +14,7 @@ from pypfopt import expected_returns
 from pypfopt import expected_returns
 from pypfopt import HRPOpt
 
-from view.inform import Descriptions
+from inform import Descriptions
 
 
 def hrp_setup():
