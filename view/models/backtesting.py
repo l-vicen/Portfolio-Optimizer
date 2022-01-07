@@ -2,12 +2,20 @@ import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+import datetime
 
-def backtesting_setup(start, end, tickers, allocations, init_investment):
+from inform import Descriptions
 
-    st.markdown('### Backtesting')
-    st.set_option('deprecation.showPyplotGlobalUse', False)
-    st.info("Portfolio backtesting seeks to determine the effectiveness of a trading strategy using historical data. The method takes the portfolio with the selected assets and calculated allocation from the corresponding strategy and compares the performance to the benchmark S&P 500 regarding the given time period.")
+def backtesting_setup(start, tickers, allocations, c1, c2):
+
+    c1.markdown('### Backtesting')
+    c2.info(Descriptions.BACKTESTING)
+
+    # End Date 
+    end = c1.date_input('End date', datetime.date(2021, 12, 1))
+
+    # Initial investment
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
 
     # Downloading asset prices
     d1 = {}

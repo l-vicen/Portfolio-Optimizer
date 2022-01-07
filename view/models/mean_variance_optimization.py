@@ -1,3 +1,5 @@
+from contextlib import nullcontext
+from urllib.parse import uses_relative
 import streamlit as st
 import controller.control as cl
 import controller.plots as myPlots
@@ -18,36 +20,46 @@ import plotly.graph_objects as go
 
 from inform import Descriptions
 
-def mean_variance_setup():
-    st.set_option('deprecation.showPyplotGlobalUse', False)
-    st.title('Mean Variance Optimization')
-
-    c1, c2 = st.columns((2, 1))
-
-    c2.header('About')
-    c2.info(Descriptions.MVO)
-
-    c1.header('Setup')
-
+def get_inputs_newbie(c1, c2):
+    
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
-    # End Date 
-    end_date = c1.date_input('End date', datetime.date(2021, 12, 1))
+    # List of Stocks
+    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
-    # Initial investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
+    c1.warning('Default Methods used: Mean Historical Return & Sample Covariance')
+
+    # Pick Objective Functions
+    objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
+    objective_function_choosen = c1.selectbox("What is your optimization objective?", objective_functions)
+
+    config_dictionary = dict(); 
+    config_dictionary['start_date'] = start_date
+    config_dictionary['list_of_stocks'] = list_of_stocks
+    config_dictionary['covariance_method_choosen'] = 'Sample Covariance'
+    config_dictionary['expected_return_method_choosen'] = 'Mean Historical Return'
+    config_dictionary['objective_function_choosen'] = objective_function_choosen
+    config_dictionary['add_regularization'] = "No"
+    config_dictionary['tunning_factor_choosen'] = 0
+
+    return config_dictionary
+
+def get_inputs_pro(c1, c2):
+    
+   # Start Date
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
-    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods)
+    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods, help = "e.g. AAPL for Apple Inc.")
 
     # Expected Return Method
     expected_returns_methods = ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"]
-    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods)
+    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods, help = "")
 
     # Pick Objective Functions
     objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
@@ -61,8 +73,19 @@ def mean_variance_setup():
     else:
         tunning_factor_choosen = 0
 
-    st.markdown('---')
+    config_dictionary = dict(); 
+    config_dictionary['start_date'] = start_date
+    config_dictionary['list_of_stocks'] = list_of_stocks
+    config_dictionary['covariance_method_choosen'] = covariance_method_choosen
+    config_dictionary['expected_return_method_choosen'] = expected_return_method_choosen
+    config_dictionary['objective_function_choosen'] = objective_function_choosen
+    config_dictionary['add_regularization'] = add_regularization
+    config_dictionary['tunning_factor_choosen'] = tunning_factor_choosen
 
+    return config_dictionary
+
+def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
+    
     if (len(list_of_stocks) > 0): 
 
         """[PART 0] In this part we retrieve 
@@ -131,7 +154,7 @@ def mean_variance_setup():
 
         st.markdown('##### Annual Performance Expectations')
         myPlots.plot_performance(ef.portfolio_performance(verbose=True))
-        c2.info(Descriptions.SHARPE_RATIO)
+        st.info(Descriptions.SHARPE_RATIO)
         st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
@@ -218,8 +241,39 @@ def mean_variance_setup():
         weightValues = asset_distribution.values()
         weightValuesList = list(weightValues)
 
-        backTest.backtesting_setup(start_date, end_date, list_of_stocks, weightValuesList, init_investment)
+        """[PART 7] Backtesting Portfolio vs. SPY"""
+        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
+
+def identify_user_experience(c1, c2):
+
+    users = ['I dont even know who I am', 'I am a newbie', 'Go ProInvestor Experience']
+    experience = c1.radio('Pick User Experience', users)
+
+    if (experience == users[0]):
+        c1.warning('You have to know who you are before we can start ;)')
+
+    elif (experience == users[1]):
+        newbie_config = get_inputs_newbie(c1, c2)
+        model_executer(newbie_config.get('start_date'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), c1, c2)
+
+    else:
+        pro_config = get_inputs_pro(c1, c2)
+        model_executer(pro_config.get('start_date'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), c1, c2)
+        
+def mean_variance_setup():
+
+    st.title('Mean Variance Optimization')
+
+    c1, c2 = st.columns((2, 1))
+
+    c1.header('Setup')
+    identify_user_experience(c1, c2)
+
+    c2.header('About')
+    c2.info(Descriptions.MVO)
+
+    st.markdown('---')
 
 
 
