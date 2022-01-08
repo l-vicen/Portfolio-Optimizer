@@ -269,6 +269,7 @@ def share_portfolio(ef, list_of_stocks, c1, c2):
         c1.success('Success!')
         googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
     else:
+        c1.error('Why not let the world benefit from your ideas ? :O')
         pass
 
 
