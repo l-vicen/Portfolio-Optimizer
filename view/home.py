@@ -36,7 +36,7 @@ class Sidebar:
 
     def sidebar_functionality(self):
         # Sidebar attribute Logo
-        st.sidebar.image('view/assets/tumSOM_logo.png')
+        st.sidebar.image('view/assets/tum.png')
         st.sidebar.markdown('---')
 
     def sidebar_contact(self):

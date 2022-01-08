@@ -1,13 +1,17 @@
 import numpy as np
 import streamlit as st
+from streamlit.type_util import Key
 import controller.control as cl
+import controller.plots as myPlots
 import pandas as pd
 import datetime
 import models_dependencies.covariances as riskMatrix
 
+import models.backtesting as backTest
 from pypfopt import black_litterman, risk_models
 from pypfopt import BlackLittermanModel
 from pypfopt import EfficientFrontier, objective_functions
+from pypfopt import DiscreteAllocation
 
 import plotly.graph_objects as go
 import plotly.express as px
@@ -21,28 +25,27 @@ def bla_setup():
 
     c2.header('About')
     c2.info(Descriptions.BLA)
-
     c1.header('Setup')
 
     # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
+    start = c1.date_input('Start date', datetime.date(2020, 1, 1))
+
+    # Initial investment
+    investment_bla = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "bla-init-investment")
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
-    # Select how to perform the MVO
-    covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
-    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods)
-
-    market_prices = cl.return_closed_prices("SPY", start_date).dropna(how="all")
-    #st.write(market_prices.head())
+    market_prices = cl.return_closed_prices("SPY", start).dropna(how="all")
+    
+    risk_free_rate = 0.0163
     
     st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
         st.markdown('### Data Retrived')
         # Download price data from desired stocks
-        df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
+        df = cl.return_closed_prices(list_of_stocks, start).dropna(how="all")
         index = df. index
         st.write(df)
         st.markdown('---')
@@ -60,16 +63,21 @@ def bla_setup():
         st.write(dfMarketCap)
         st.markdown('---')
 
-        st.markdown('### Calculating Prior')
+        # st.markdown('### Delta') 
+        # st.write("Every asset in the market portfolio contributes a certain amount of risk to the portfolio. Standard theory suggests that investors must becompensated for the risk that they take, so we can attribute to each asset an expected compensation(i.e prior estimate of returns). This is quantified by the market-implied risk premium, which is the market’s excess return divided by its variance.")
         S = risk_models.CovarianceShrinkage(df, frequency=len(index)).ledoit_wolf()
-        delta = black_litterman.market_implied_risk_aversion(market_prices)
-        st.write(delta)
-        st.markdown('---')
+        delta = black_litterman.market_implied_risk_aversion(market_prices, risk_free_rate = risk_free_rate)
+        # st.write(delta)
+        # st.markdown('---')
 
         st.markdown("### Covariance Matrix")
+        help = "Calculated by using Covariance Shrinkage Ledoit Wolf"
+        st.write(help)
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(S)
         st.write(S)
+        st.markdown('---')
 
+        st.markdown("### Correlation Matrix")
         fig1 = go.Figure(data=go.Heatmap(
             z=correlationMatrixCalculated,
             x=list_of_stocks,
@@ -82,7 +90,8 @@ def bla_setup():
         st.markdown('---')
 
         st.markdown('### Market prior')
-        market_prior = black_litterman.market_implied_prior_returns(marketCap, delta, S)
+        st.write("Market prior is market’s estimate of the return, which is embedded into the market capitalisation of the asset. In this case it is calculated by using S&P 500 index for calculating the expected market return rate and FED risk-free rate (currently" + str(risk_free_rate) + ") for calculating the market risk premium. ")
+        market_prior = black_litterman.market_implied_prior_returns(marketCap, delta, S, risk_free_rate=risk_free_rate)
         st.write(market_prior)
 
         fig2 = go.Figure(go.Bar(
@@ -95,35 +104,37 @@ def bla_setup():
         st.markdown('### Absolute views / expectations')
         viewdict = {}
         for i in list_of_stocks:
-            viewdict[i] = st.number_input('view for ' + i, min_value=-0.001, max_value=10000.0, value=0.01, step=0.1)
+            help = "Give your view on how you think your chosen stock will perform, eg. if you think " + i + " will perform +10%, type in “0,10”."
+            viewdict[i] = st.number_input('view for ' + i, min_value=-10000.0, max_value=10000.0, value=0.00, step=0.1, help = help)
         data_items = viewdict. items()
         data_list = list(data_items)
         viewdictDF = pd. DataFrame(data_list, columns = ['Company', 'View'])
-        st.write(viewdictDF)
+        # st.write(viewdictDF)
         bl = BlackLittermanModel(S, pi=market_prior, absolute_views=viewdict)
         st.markdown('---')
 
         st.markdown('### View confidences')
         confidences = {}
         for i in list_of_stocks:
-            confidences[i] = st.slider('confidence for the view ' + i, min_value=0.01, max_value=1.0, value=0.01, step=0.1)
+            help = "Give your confidence in your view for " + i + " e.g. if you are 20% confident, type 0,2."
+            confidences[i] = st.slider('confidence for the view ' + i, min_value=0.01, max_value=1.0, value=0.00, step=0.1, help = help)
         data_items = confidences. items()
         data_list = list(data_items)
-        confidencesDF = pd. DataFrame(data_list, columns = ['Company', 'Confidence'])
-        st.write(confidencesDF)
+        confidencesDF = pd.DataFrame(data_list, columns = ['Company', 'Confidence'])
+        # st.write(confidencesDF)
 
         values_column = list(confidences.values()) # It is only the values list from the confidences dict, it is required like that by later methods from pyport.
         bl = BlackLittermanModel(S, pi=market_prior, absolute_views=viewdict, omega="idzorek", view_confidences=values_column)
         st.markdown('---')
 
-        # TODO: Add variance of the view to the view DF
-        st.markdown('### Omega')
+        #st.markdown('### Omega')
         omegaSelf = np.diag(bl.omega)
-        st.write(omegaSelf)
+        # st.write(omegaSelf)
         omega=bl.omega
-        st.markdown('---')
+        #st.markdown('---')
 
         st.markdown('### Posterior estimates')
+        st.write("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
         # We are using the shortcut to automatically compute market-implied prior
         bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
         # Posterior estimate of returns
@@ -150,3 +161,21 @@ def bla_setup():
         weightsDF = pd. DataFrame(data_list, columns = ['Company', 'Weight in portfolio'])
         st.write(weightsDF)
         st.markdown('---')
+
+        st.markdown('### Portfolio performance')
+        bl.bl_weights(risk_aversion=None)
+        performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
+        myPlots.plot_performance(performance)
+        st.markdown('---')
+
+        st.markdown('### Discrete allocation')
+        da = DiscreteAllocation(weights, df.iloc[-1], total_portfolio_value = investment_bla)
+        alloc, leftover = da.lp_portfolio()
+        data_items = alloc.items()
+        data_list = list(data_items)
+        allocDF = pd. DataFrame(data_list, columns = ['Company', 'Stocks in portfolio'])
+        st.write(allocDF)
+        st.write(f"Leftover: ${leftover:.2f}")
+        st.markdown('---')
+
+        backTest.backtesting_setup(start, list_of_stocks, weights, c1, c2)

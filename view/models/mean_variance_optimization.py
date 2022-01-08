@@ -1,5 +1,3 @@
-from contextlib import nullcontext
-from urllib.parse import uses_relative
 import streamlit as st
 import controller.control as cl
 import controller.plots as myPlots
