@@ -15,7 +15,7 @@ def display_home():
     col2.header('Algorithmic Coverage')
 
     # TODO: Public Dashboard implementation goes here 
-    st.title("Public Dashboard")
+    st.markdown("## Public Dashboard")
 
     conn = connect()
 
