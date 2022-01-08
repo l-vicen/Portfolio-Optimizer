@@ -17,7 +17,7 @@ def backtesting_setup(start, tickers, allocations, c1, c2):
     end = c3.date_input('End date', datetime.date(2021, 12, 1))
 
     # Initial investment
-    init_investment = c4.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "backtesting-init-investment")
+    init_investment = c3.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "backtesting-init-investment")
 
     # Downloading asset prices
     d1 = {}
