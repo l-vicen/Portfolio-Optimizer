@@ -51,5 +51,5 @@ home.sidebar.sidebar_functionality()
 route.display_router()
 route.route()
 
-home.sidebar.sidebar_contact()
 home.sidebar.sidebar_inform_libs()
+home.sidebar.sidebar_contact()
