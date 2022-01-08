@@ -1,6 +1,7 @@
 # Dependencies
 import streamlit as st
 from gsheetsdb import connect
+import pandas as pd
 
 def display_home():
     st.title('Multi-feature Portfolio Optimizer App (MPOA)')
@@ -14,29 +15,32 @@ def display_home():
 
     # TODO: Public Dashboard implementation goes here 
     st.title("Public Dashboard")
-    # Create a connection object.
-    st.secrets["public_gsheets_url"]
 
-    # Create a connection object.
     conn = connect()
 
-    @st.cache(ttl=600)
-    def run_query(query):
-        rows = conn.execute(query, headers=1)
-        return rows
+    sheet_url = st.secrets["feedback_gsheets_url"]
+    df = pd.read_sql(f'SELECT * FROM "{sheet_url}"',
+                     conn,
+                     parse_dates=["timestamp"])
 
-    sheet_url = st.secrets["public_gsheets_url"]
-    rows = run_query(f'SELECT * FROM "{sheet_url}"')
+    df.rename(columns={"method": "Method",
+                       "portfolio": "Portfolio",
+                       "expected_annual_return": "Expected annual return",
+                       "annual_volatility": "Annual volatility",
+                       "sharpe_ratio": "Sharpe ratio",
+                       "timestamp": "Timestamp"},
+              inplace=True)
 
-    # Print results.
-    for row in rows:
-        st.write(f"{row.tickers}")
-        
+    df.index += 1
+
+    st.table(df)
+
+
 class Sidebar: 
 
     def sidebar_functionality(self):
         # Sidebar attribute Logo
-        st.sidebar.image('view/assets/tum.png')
+        st.sidebar.image('view/assets/tumSOM_logo.png')
         st.sidebar.markdown('---')
 
     def sidebar_contact(self):

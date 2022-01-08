@@ -1,3 +1,5 @@
+from contextlib import nullcontext
+from urllib.parse import uses_relative
 import streamlit as st
 import controller.control as cl
 import controller.plots as myPlots
@@ -5,6 +7,7 @@ import controller.plots as myPlots
 import models_dependencies.expected_returns as expectedReturn
 import models_dependencies.covariances as riskMatrix
 import models_dependencies.objectives as objective
+import models_dependencies.google_sheet as googleSheet
 
 import models.backtesting as backTest
 
@@ -18,13 +21,17 @@ import plotly.graph_objects as go
 
 from inform import Descriptions
 
+
 def get_inputs_newbie(c1, c2):
     
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
+                                    cl.return_list_tickers(),
+                                    default=googleSheet.load_tickers(),
+                                    on_change=googleSheet.change())
 
     c1.warning('Default Methods used: Mean Historical Return & Sample Covariance')
 
@@ -43,13 +50,17 @@ def get_inputs_newbie(c1, c2):
 
     return config_dictionary
 
+
 def get_inputs_pro(c1, c2):
     
-   # Start Date
+    # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
+                                    cl.return_list_tickers(),
+                                    default=googleSheet.load_tickers(),
+                                    on_change=googleSheet.change())
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
@@ -82,9 +93,13 @@ def get_inputs_pro(c1, c2):
 
     return config_dictionary
 
+
 def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
     
-    if (len(list_of_stocks) > 0): 
+    if len(list_of_stocks) > 0:
+
+        # Save current portfolio
+        googleSheet.save_tickers(list_of_stocks)
 
         """[PART 0] In this part we retrieve 
         and plot data from yahooFinanace. The
@@ -242,6 +257,8 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         """[PART 7] Backtesting Portfolio vs. SPY"""
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
+        # Saving the expected performance from the current portfolio
+        googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
 
 def identify_user_experience(c1, c2):
 
