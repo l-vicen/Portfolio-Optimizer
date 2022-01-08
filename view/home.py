@@ -3,13 +3,14 @@ import streamlit as st
 from gsheetsdb import connect
 import pandas as pd
 
+from inform import Descriptions
+
 def display_home():
     st.title('Multi-feature Portfolio Optimizer App (MPOA)')
     col1, col2 = st.columns([1,1])
 
     col1.header('About')
-    message = 'Our project allows you to query historical data from __yFinance API__ on different stocks based on their ticker, with this information in hands you can run a multitude of different optimization strategies and see how they perform.'
-    col1.markdown(message, unsafe_allow_html = True)
+    col1.info(Descriptions.ABOUT)
 
     col2.header('Algorithmic Coverage')
 

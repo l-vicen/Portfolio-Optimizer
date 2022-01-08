@@ -1,5 +1,9 @@
 class Descriptions:
 
+    # HOME PAGE
+    ABOUT = 'Our project allows you to query historical data from __yFinance API__ on different stocks based on their ticker, \
+        with this information in hands you can run a multitude of different optimization strategies and see how they perform.'
+
     # SETUPS HELPERS
 
     ANNUAL_YEAR_TO_BE_CONSIDER_HELPER = 'Year to be considered (Annual unit measured)'
