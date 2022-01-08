@@ -262,15 +262,15 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
 
 
 def share_portfolio(ef, list_of_stocks, c1, c2):
-    share = ['Share Portfolio', 'Dont Share']
+    share = ['Dont Share', 'Share Portfolio']
     share_choice = c1.radio('Let the world know about this Portfolio', share)
 
     if (share_choice == share[0]):
+        c1.error('Why not let the world benefit from your ideas ? :O')
+    else:
         c1.success('Success!')
         googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
-    else:
-        c1.error('Why not let the world benefit from your ideas ? :O')
-        pass
+        
 
 
 def identify_user_experience(c1, c2):
