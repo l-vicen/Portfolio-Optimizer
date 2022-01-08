@@ -8,14 +8,16 @@ from inform import Descriptions
 
 def backtesting_setup(start, tickers, allocations, c1, c2):
 
-    c1.markdown('### Backtesting')
-    c2.info(Descriptions.BACKTESTING)
+    c3, c4= st.columns((2, 1))
+
+    c3.markdown('### Backtesting')
+    c4.info(Descriptions.BACKTESTING)
 
     # End Date 
-    end = c1.date_input('End date', datetime.date(2021, 12, 1))
+    end = c3.date_input('End date', datetime.date(2021, 12, 1))
 
     # Initial investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "backtesting-init-investment")
+    init_investment = c4.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "backtesting-init-investment")
 
     # Downloading asset prices
     d1 = {}
