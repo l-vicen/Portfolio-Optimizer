@@ -258,13 +258,19 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
         # Saving the expected performance from the current portfolio
-        form = st.form(key='my_form')
-        submit_button = form.form_submit_button(label='Submit')
-        
-        if (submit_button):
-            googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
-        else: 
-            pass
+        share_portfolio(ef, list_of_stocks, c1, c2)
+
+
+def share_portfolio(ef, list_of_stocks, c1, c2):
+    share = ['Share Portfolio', 'Dont Share']
+    share_choice = c1.radio('Let the world know about this Portfolio', share)
+
+    if (share_choice == share[0]):
+        c1.success('Success!')
+        googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
+    else:
+        pass
+
 
 def identify_user_experience(c1, c2):
 
