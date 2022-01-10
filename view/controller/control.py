@@ -33,7 +33,8 @@ This function reads the cleaned .csv
 from return_list_tickers_names() and 
 gives the respective tickers only. 
 """
-def return_tickers_from_names(data, names):
+def return_tickers_from_names(names):
+    data = return_list_tickers_names()
     df = data[data.Name.isin(names)]
     return df['Symbol'].tolist()
 

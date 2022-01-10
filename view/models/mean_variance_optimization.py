@@ -37,8 +37,10 @@ def get_inputs_newbie(c1, c2):
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
         st.write(tmpListNames)
-        list_of_stocks = return_tickers_from_names(cl.return_list_tickers_names(), tmpListNames)
-        st.write(list_of_stocks)
+        st.write(return_tickers_from_names(data, names))
+
+        # list_of_stocks = return_tickers_from_names(data, names)
+        # st.write(list_of_stocks)
 
     else:
         list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
