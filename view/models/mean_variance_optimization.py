@@ -114,10 +114,8 @@ def get_inputs_pro(c1, c2):
     return config_dictionary
 
 
-def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen):
+def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
     
-    c3, c4 = st.columns((2, 1))
-
     if len(list_of_stocks) > 0:
 
         # Save current portfolio
@@ -127,14 +125,14 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         and plot data from yahooFinanace. The
         data is on the adjusted closed prices."""
 
-        c3.markdown('### Data Retireved')
+        st.markdown('### Data Retireved')
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
-        c3.write(df)
+        st.write(df)
 
-        c3.markdown('---')
+        st.markdown('---')
 
-        c3.markdown('### Historical Adjusted Prices')
-        c3.line_chart(df)
+        st.markdown('### Historical Adjusted Prices')
+        st.line_chart(df)
 
         st.markdown('---')
 
@@ -143,10 +141,10 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         and according to specific covariance method 
         selected. """
 
-        c3.markdown("### Correlation Matrix")
+        st.markdown("### Correlation Matrix")
         covarianceMatrixCalculated = riskMatrix.calculate_covariance_according_to(df, covariance_method_choosen)
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(covarianceMatrixCalculated)
-        c3.write(correlationMatrixCalculated)
+        st.write(correlationMatrixCalculated)
 
         fig = go.Figure(data=go.Heatmap(
                 z= correlationMatrixCalculated,
@@ -156,8 +154,8 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
                 type = 'heatmap',
                 colorscale = 'Viridis'))
 
-        c3.plotly_chart(fig)            
-        c3.markdown('---')
+        st.plotly_chart(fig)            
+        st.markdown('---')
 
 
         """[PART 2] In this part we calculate the 
@@ -165,57 +163,57 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         and according to specific expected return
         method selected. """
 
-        c3.markdown('### Expected Returns')
+        st.markdown('### Expected Returns')
         expectedReturnCalculated = expectedReturn.calculate_expected_return_according_to(df, expected_return_method_choosen)
-        c3.write(expectedReturnCalculated)
-        c3.bar_chart(expectedReturnCalculated)
-        c3.markdown('---')
+        st.write(expectedReturnCalculated)
+        st.bar_chart(expectedReturnCalculated)
+        st.markdown('---')
 
         """[PART 3] In this part we run the optimization
         setup selected in setup. """
 
-        c3.markdown('### Asset Distribution')
+        st.markdown('### Asset Distribution')
 
         ef = objective.calculate_asset_distribution_according_to(objective_function_choosen, add_regularization, tunning_factor_choosen ,expected_returns = expectedReturnCalculated, covariance_matrix = covarianceMatrixCalculated)
 
         asset_distribution = ef.clean_weights()
-        c3.write(asset_distribution)
-        c3.bar_chart(pd.Series(asset_distribution))
-        c3.markdown('---')
+        st.write(asset_distribution)
+        st.bar_chart(pd.Series(asset_distribution))
+        st.markdown('---')
 
         """[PART 4] Spare Porfolio Performance 
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio."""
 
-        c3.markdown('##### Annual Performance Expectations')
-        myPlots.plot_performance(ef.portfolio_performance(verbose=True), c3, c4)
+        st.markdown('##### Annual Performance Expectations')
+        myPlots.plot_performance(ef.portfolio_performance(verbose=True), c1, c2)
 
         # Saving the expected performance from the current portfolio
-        share_portfolio(ef, list_of_stocks, c3, c4)
+        share_portfolio(ef, list_of_stocks, c1, c2)
 
-        st.info(Descriptions.ANNUAL_VOLATILITY)
-        st.info(Descriptions.ANNUAL_EXPECTED_RETURN)
-        st.info(Descriptions.SHARPE_RATIO)
+        c2.info(Descriptions.ANNUAL_VOLATILITY)
+        c2.info(Descriptions.ANNUAL_EXPECTED_RETURN)
+        c2.info(Descriptions.SHARPE_RATIO)
 
-        c3.markdown('---')
+        st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
         such that in case brokeragge does not allow
         partial shares."""
 
-        c3.markdown('### Discrete Allocation')
+        st.markdown('### Discrete Allocation')
 
         latest_prices = df.iloc[-1]  # prices as of the day you are allocating
         discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value=20000, short_ratio=0.3)
         allocation, leftover = discreteAllocation.lp_portfolio()
-        c3.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
-        c3.write(allocation)
+        st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
+        st.write(allocation)
 
          
         """[PART 6] Plotting simulated portfolios"""
 
-        c3.markdown('---')
-        c3.markdown('### Efficient Frontier')
+        st.markdown('---')
+        st.markdown('### Efficient Frontier')
 
         n_samples = 1000
 
@@ -276,18 +274,20 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
                         width=850,
                         height=500)
         fig.update_layout(coloraxis_colorbar=dict(title="Sharpe Ratio"))
-        c3.plotly_chart(fig)
+        st.plotly_chart(fig)
 
-        c3.markdown('---')
+        st.markdown('---')
 
         weightValues = asset_distribution.values()
         weightValuesList = list(weightValues)
 
         """[PART 7] Backtesting Portfolio vs. SPY"""
-        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c3, c4)
+        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
 
 def share_portfolio(ef, list_of_stocks, c1, c2):
+
+    st.markdown('---')
     share = ['Dont Share', 'Share Portfolio']
     share_choice = c1.radio('Let the world know about this Portfolio', share)
 
@@ -308,11 +308,11 @@ def identify_user_experience(c1, c2):
 
     elif (experience == users[1]):
         newbie_config = get_inputs_newbie(c1, c2)
-        model_executer(newbie_config.get('start_date'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'))
+        model_executer(newbie_config.get('start_date'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), c1, c2)
 
     else:
         pro_config = get_inputs_pro(c1, c2)
-        model_executer(pro_config.get('start_date'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'))
+        model_executer(pro_config.get('start_date'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), c1, c2)
         
 def mean_variance_setup():
 
