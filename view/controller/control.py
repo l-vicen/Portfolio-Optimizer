@@ -35,19 +35,9 @@ from return_list_tickers_names() and
 gives the respective tickers only. 
 """
 def return_tickers_from_names(names):
-    ticker = []
-
-    for ticker in list:
-            name.append(yf.Ticker(ticker).info['longName']) 
-
-
-def ticker_name(list):
-    name = []
-
-    for ticker in list:
-        name.append(yf.Ticker(ticker).info['longName'])
-
-    return name
+    data = return_list_tickers_names()
+    df = data[data['Symbol'].isin(names)]
+    return df.values.toList()
 
 """
 This fuction downloads the adjusted closing price
