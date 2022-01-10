@@ -21,7 +21,7 @@ besides the list of symbols and names, and returns
 a list of tickers.
 """
 def return_list_tickers_names():
-    data = pd.read_csv("data/symbols.csv", usecols=['Symbol', 'Name'])
+    data = pd.read_csv("data/symbols.csv", usecols=['Name'])
     return data
 
 """
