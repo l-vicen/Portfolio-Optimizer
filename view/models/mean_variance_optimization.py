@@ -37,7 +37,7 @@ def stock_search(c1, c2):
                                     on_change=googleSheet.change())
 
     
-        return cl.return_tickers_from_names(list_of_stocks)
+        return cl.mutter(list_of_stocks)
 
     else:
         list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
