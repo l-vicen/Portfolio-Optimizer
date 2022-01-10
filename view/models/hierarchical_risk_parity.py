@@ -189,14 +189,6 @@ def hrp_setup_nubie(c1, c2):
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio"""
 
-        st.markdown('### Expected Performance')
-
-        # Show descriptions of the different KPIs
-
-        st.info(Descriptions.ANNUAL_EXPECTED_RETURN)
-        st.info(Descriptions.ANNUAL_VOLATILITY)
-        st.info(Descriptions.SHARPE_RATIO)
-
         # Show calculated KPIs
 
         myPlots.plot_performance(hrp.portfolio_performance(verbose=True))
@@ -212,9 +204,9 @@ def hrp_setup_nubie(c1, c2):
         st.write(weights)
 
         # Decide whether or not to share
-        share_portfolio(ef, list_of_stocks)
+        share_portfolio(hrp, list_of_stocks)
 
-def share_portfolio(ef, list_of_stocks):
+def share_portfolio(hrp, list_of_stocks):
 
     share = ['Dont Share', 'Share Portfolio']
     share_choice = st.radio('Let the world know about this Portfolio', share)
