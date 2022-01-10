@@ -37,7 +37,7 @@ gives the respective tickers only.
 def return_tickers_from_names(names):
     data = return_list_tickers_names()
     df = data[data['Symbol'].isin(names)]
-    return df.values.toList()
+    return df.values
 
 """
 This fuction downloads the adjusted closing price
