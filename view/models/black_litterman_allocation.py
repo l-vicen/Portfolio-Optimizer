@@ -141,7 +141,7 @@ def model_executer_newbie(start_date, init_investment, list_of_stocks, market_pr
         myPlots.plot_performance(performance)
 
         # Decide whether or not to share
-        share_portfolio(bla.portfolio_performance(), list_of_stocks)
+        share_portfolio(performance, list_of_stocks)
 
 def model_executer_pro(start_date, init_investment, list_of_stocks, market_prices, risk_free_rate,  c1, c2):
  
@@ -294,7 +294,7 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
         myPlots.plot_performance(performance)
 
         # Decide whether or not to share
-        share_portfolio(bla.portfolio_performance(), list_of_stocks)
+        share_portfolio(performance, list_of_stocks)
 
 def share_portfolio(bla_performance, list_of_stocks):
     share = ['Dont Share', 'Share Portfolio']
