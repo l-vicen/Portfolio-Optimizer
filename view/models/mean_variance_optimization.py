@@ -131,7 +131,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
         c3.write(df)
 
-        st.markdown('---')
+        c3.markdown('---')
 
         c3.markdown('### Historical Adjusted Prices')
         c3.line_chart(df)
@@ -157,7 +157,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
                 colorscale = 'Viridis'))
 
         c3.plotly_chart(fig)            
-        st.markdown('---')
+        c3.markdown('---')
 
 
         """[PART 2] In this part we calculate the 
@@ -169,7 +169,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         expectedReturnCalculated = expectedReturn.calculate_expected_return_according_to(df, expected_return_method_choosen)
         c3.write(expectedReturnCalculated)
         c3.bar_chart(expectedReturnCalculated)
-        st.markdown('---')
+        c3.markdown('---')
 
         """[PART 3] In this part we run the optimization
         setup selected in setup. """
@@ -197,25 +197,25 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         c4.info(Descriptions.ANNUAL_EXPECTED_RETURN)
         c4.info(Descriptions.SHARPE_RATIO)
 
-        st.markdown('---')
+        c3.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
         such that in case brokeragge does not allow
         partial shares."""
 
-        st.markdown('### Discrete Allocation')
+        c3.markdown('### Discrete Allocation')
 
         latest_prices = df.iloc[-1]  # prices as of the day you are allocating
         discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value=20000, short_ratio=0.3)
         allocation, leftover = discreteAllocation.lp_portfolio()
         c3.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
-        st.write(allocation)
+        c3.write(allocation)
 
          
         """[PART 6] Plotting simulated portfolios"""
 
-        st.markdown('---')
-        st.markdown('### Efficient Frontier')
+        c3.markdown('---')
+        c3.markdown('### Efficient Frontier')
 
         n_samples = 1000
 
@@ -276,9 +276,9 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
                         width=850,
                         height=500)
         fig.update_layout(coloraxis_colorbar=dict(title="Sharpe Ratio"))
-        st.plotly_chart(fig)
+        c3.plotly_chart(fig)
 
-        st.markdown('---')
+        c3.markdown('---')
 
         weightValues = asset_distribution.values()
         weightValuesList = list(weightValues)
