@@ -283,7 +283,6 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
 
 def share_portfolio(ef, list_of_stocks, c1, c2):
 
-    st.markdown('---')
     share = ['Dont Share', 'Share Portfolio']
     share_choice = c1.radio('Let the world know about this Portfolio', share)
 
@@ -293,7 +292,6 @@ def share_portfolio(ef, list_of_stocks, c1, c2):
         googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
         c1.success('Success!')
         
-
 
 def identify_user_experience(c1, c2):
     users = ['I dont even know who I am', 'I am a newbie', 'Go ProInvestor Experience']
