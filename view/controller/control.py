@@ -2,11 +2,6 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-def mutter(names):
-    data = return_list_tickers_names()
-    df = data[data.Name.isin(names)]
-    return df['Symbol'].tolist()
-
 """
 This function reads in a Nasdaq csv file
 containing information about stocks listed 
@@ -23,6 +18,18 @@ def return_list_tickers():
 This function reads in a Nasdaq csv file
 containing information about stocks listed 
 in this borse. This function removes everything
+besides the list names, and returns 
+a list of company names.
+"""
+def return_list_tickers_only_names():
+    data = pd.read_csv("data/symbols.csv")
+    df = data['Name']
+    return df.values.tolist()
+
+"""
+This function reads in a Nasdaq csv file
+containing information about stocks listed 
+in this borse. This function removes everything
 besides the list of symbols and names, and returns 
 a list of tickers.
 """
@@ -30,18 +37,12 @@ def return_list_tickers_names():
     data = pd.read_csv("data/symbols.csv", usecols=['Symbol', 'Name'])
     return data
 
-def return_list_tickers_only_names():
-    data = pd.read_csv("data/symbols.csv")
-    df = data['Name']
-    return df.values.tolist()
-
 """
 This function reads the cleaned .csv
 from return_list_tickers_names() and 
 gives the respective tickers only. 
 """
 def return_tickers_from_names(names):
-
     data = return_list_tickers_names()
     df = data[data['Name'].isin(names)]
     nestedArray = df['Symbol'].values.tolist()

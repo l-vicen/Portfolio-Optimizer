@@ -67,6 +67,8 @@ def get_inputs_newbie(c1, c2):
     config_dictionary['add_regularization'] = "No"
     config_dictionary['tunning_factor_choosen'] = 0
 
+    st.markdown('---')
+
     return config_dictionary
 
 
@@ -106,6 +108,8 @@ def get_inputs_pro(c1, c2):
     config_dictionary['objective_function_choosen'] = objective_function_choosen
     config_dictionary['add_regularization'] = add_regularization
     config_dictionary['tunning_factor_choosen'] = tunning_factor_choosen
+
+    st.markdown('---')
 
     return config_dictionary
 
