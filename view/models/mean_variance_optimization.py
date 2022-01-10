@@ -1,6 +1,8 @@
 from contextlib import nullcontext
 from urllib.parse import uses_relative
 import streamlit as st
+
+
 import controller.control as cl
 import controller.plots as myPlots
 
@@ -82,7 +84,6 @@ def get_inputs_pro(c1, c2):
                                     cl.return_list_tickers_only_names(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
-
         st.write(tmpListNames)
         st.write(cl.return_tickers_from_names(tmpListNames))
 
