@@ -34,6 +34,8 @@ def stock_search(c1, c2):
                                     cl.return_list_tickers_only_names(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
+
+        list_of_stocks = cl.return_tickers_from_names(tmpListNames)
         
         st.write(list_of_stocks)
         return list_of_stocks
