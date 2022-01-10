@@ -141,7 +141,7 @@ def hrp_setup_ex(c1, c2):
         st.markdown('### 5. Backtesting')
         weightValues = weights.values()
         weightValuesList = list(weightValues)
-        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
+        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
         share_portfolio(ef, list_of_stocks)
