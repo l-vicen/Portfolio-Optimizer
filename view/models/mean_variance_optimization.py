@@ -40,7 +40,7 @@ def get_inputs_newbie(c1, c2):
         st.write(tmpListNames)
         st.write(cl.return_tickers_from_names(tmpListNames))
 
-        list_of_stocks = cl.return_tickers_from_names(tmpListNames)
+        list_of_stocks = cl.return_tickers_from_names(tmpListNames).toList()
         st.write(list_of_stocks)
 
     else:
