@@ -23,40 +23,34 @@ import plotly.graph_objects as go
 
 from inform import Descriptions
 
-def ui_selector(list_of_assets, c1, c2):
-    list_of_stocks = c1.multiselect("Select all companies you want to have in the portfolio",
+def stock_search_selector(list_of_assets, c1, c2):
+    list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio",
                                     list_of_assets,
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
 
     return list_of_stocks
 
-def stock_search(c1, c2):
+def stock_search_ui(c1, c2):
 
     # List of Stocks
     search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
     search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
 
     if (search_choice == search[0]):
-
-        list_of_stocks_names = ui_selector(cl.return_list_tickers_only_names(), c1, c2)
-    
-        list_of_stocks = cl.return_tickers_from_names(list_of_stocks_names)
-        st.write(list_of_stocks)
-        return list_of_stocks
-
+        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_only_names(), c1, c2)
+        return cl.return_tickers_from_names(list_of_stocks_names)
+        
     else:
-        list_of_stocks = ui_selector(cl.return_list_tickers(), c1, c2)
-        st.write(list_of_stocks)
-        return list_of_stocks
+        return stock_search_selector(cl.return_list_tickers(), c1, c2)
 
 def get_inputs_newbie(c1, c2):
     
+    # List of Stocks
+    list_of_stocks = stock_search_ui(c1, c2)
+
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
-
-    # List of Stocks
-    list_of_stocks = stock_search(c1, c2)
     
     c1.warning('Default Methods used: Mean Historical Return & Sample Covariance')
 
@@ -78,11 +72,11 @@ def get_inputs_newbie(c1, c2):
 
 def get_inputs_pro(c1, c2):
     
+    # List of Stocks
+    list_of_stocks = stock_search_ui(c1, c2)
+
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
-
-    # List of Stocks
-    list_of_stocks = stock_search(c1, c2)
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
