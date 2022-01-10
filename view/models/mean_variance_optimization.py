@@ -185,10 +185,6 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio."""
         myPlots.plot_performance(ef.portfolio_performance(verbose=True), ef, list_of_stocks)
-
-        # Saving the expected performance from the current portfolio
-        #share_portfolio(ef, list_of_stocks, c1, c2)
-
         st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
@@ -278,17 +274,20 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         """[PART 7] Backtesting Portfolio vs. SPY"""
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
+        # Saving the expected performance from the current portfolio
+        share_portfolio(ef, list_of_stocks)
 
-def share_portfolio(ef, list_of_stocks, c1, c2):
+
+def share_portfolio(ef, list_of_stocks):
 
     share = ['Dont Share', 'Share Portfolio']
-    share_choice = c1.radio('Let the world know about this Portfolio', share)
+    share_choice = st.radio('Let the world know about this Portfolio', share)
 
     if (share_choice == share[0]):
-        c1.error('Why not let the world benefit from your ideas ? :O')
+        st.error('Why not let the world benefit from your ideas ? :O')
     else:
         googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
-        c1.success('Success!')
+        st.success('Success!')
         
 
 def identify_user_experience(c1, c2):
