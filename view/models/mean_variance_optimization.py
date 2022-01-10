@@ -28,7 +28,19 @@ def get_inputs_newbie(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
+
+    search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
+    search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
+
+    if (search_choice == search[0]):
+        tmpListNames = c1.multiselect("Selct all tickers you want to have in the portfolio",
+                                    cl.return_list_tickers_names(),
+                                    default=googleSheet.load_tickers(),
+                                    on_change=googleSheet.change())
+        list_of_stocks = return_tickers_from_names(tmpListNames)
+
+    else:
+        list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
                                     cl.return_list_tickers(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
@@ -57,7 +69,19 @@ def get_inputs_pro(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
+
+    search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
+    search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
+   
+    if (search_choice == search[0]):
+        tmpListNames = c1.multiselect("Selct all tickers you want to have in the portfolio",
+                                    cl.return_list_tickers_names(),
+                                    default=googleSheet.load_tickers(),
+                                    on_change=googleSheet.change())
+        list_of_stocks = return_tickers_from_names(tmpListNames)
+
+    else:
+        list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
                                     cl.return_list_tickers(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())

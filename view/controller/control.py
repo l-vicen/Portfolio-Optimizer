@@ -8,11 +8,31 @@ in this borse. This function removes everything
 besides the list of symbols, and returns a list 
 of tickers.
 """
-
 def return_list_tickers():
     data = pd.read_csv("data/symbols.csv")
     df = data['Symbol']
     return df.values.tolist()
+
+"""
+This function reads in a Nasdaq csv file
+containing information about stocks listed 
+in this borse. This function removes everything
+besides the list of symbols and names, and returns 
+a list of tickers.
+"""
+def return_list_tickers_names():
+    data = pd.read_csv("data/symbols.csv", usecols=['Symbol', 'Name'])
+    return data
+
+"""
+This function reads the cleaned .csv
+from return_list_tickers_names() and 
+gives the respective tickers only. 
+"""
+def return_tickers_from_names(names):
+    data = return_list_tickers_names()
+    df = data[data.Name.isin(names)]
+    return df['Symbol'].tolist()
 
 """
 This fuction downloads the adjusted closing price
@@ -21,6 +41,14 @@ This method returns a dataframe.
 """
 def return_closed_prices(tickers, date):
     return yf.download(tickers, date)['Adj Close']
+
+"""
+This fuction downloads the adjusted closing price
+of a list of company names given since a respective date.
+This method returns a dataframe. 
+"""
+def return_closed_prices_names(names, date):
+    return return_closed_prices(return_tickers_from_names(names), date) 
 
 """
 This fuction downloads the market capitalization
@@ -35,12 +63,9 @@ def return_market_capitalizations(tickers):
 
     return marketCaps
 
-
 """
 This function is Andre's data query for the
 backtesting feature.
 """
 def return_closed_prices_time_interval(ticker, start, end):
    return yf.download(ticker, start=start, end=end)
-
-

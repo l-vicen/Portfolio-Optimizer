@@ -244,8 +244,6 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
 
         #st.plotly_chart(fig4)
 
-        st.markdown('---')
-
         st.markdown('### Posterior estimates')
      
         st.info("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
