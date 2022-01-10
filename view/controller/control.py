@@ -43,7 +43,7 @@ def return_tickers_from_names(names):
     nestedArray = df.values.tolist()
     arr = np.array(nestedArray)
 
-    return arr.reshape([1, len(arr)])
+    return arr
 
 """
 This fuction downloads the adjusted closing price
