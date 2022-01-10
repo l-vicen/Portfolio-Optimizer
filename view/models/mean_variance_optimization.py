@@ -187,7 +187,14 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
 
         st.markdown('##### Annual Performance Expectations')
         myPlots.plot_performance(ef.portfolio_performance(verbose=True))
-        st.info(Descriptions.SHARPE_RATIO)
+
+        # Saving the expected performance from the current portfolio
+        share_portfolio(ef, list_of_stocks, c1, c2)
+
+        c2.info(Descriptions.ANNUAL_VOLATILITY)
+        c2.info(Descriptions.ANNUAL_EXPECTED_RETURN)
+        c2.info(Descriptions.SHARPE_RATIO)
+        
         st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
@@ -277,9 +284,6 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         """[PART 7] Backtesting Portfolio vs. SPY"""
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
-        # Saving the expected performance from the current portfolio
-        share_portfolio(ef, list_of_stocks, c1, c2)
-
 
 def share_portfolio(ef, list_of_stocks, c1, c2):
     share = ['Dont Share', 'Share Portfolio']
@@ -294,7 +298,6 @@ def share_portfolio(ef, list_of_stocks, c1, c2):
 
 
 def identify_user_experience(c1, c2):
-
     users = ['I dont even know who I am', 'I am a newbie', 'Go ProInvestor Experience']
     experience = c1.radio('Pick User Experience', users)
 
@@ -311,7 +314,7 @@ def identify_user_experience(c1, c2):
         
 def mean_variance_setup():
 
-    st.title('Mean Variance Optimization')
+    st.title('Mean-Variance Optimization')
 
     c1, c2 = st.columns((2, 1))
 
@@ -320,8 +323,6 @@ def mean_variance_setup():
 
     c2.header('About')
     c2.info(Descriptions.MVO)
-
-    st.markdown('---')
 
 
 
