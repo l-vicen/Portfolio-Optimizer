@@ -133,7 +133,7 @@ def hrp_setup_ex(c1, c2):
 
         # Show descriptions of the different KPIs
 
-        st.info(Descriptions.ANNUAL_EXPECTEd_RETURN)
+        st.info(Descriptions.ANNUAL_EXPECTED_RETURN)
         st.info(Descriptions.ANNUAL_VOLATILITY)
         st.info(Descriptions.SHARPE_RATIO)
 
