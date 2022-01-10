@@ -16,7 +16,7 @@ def plot_performance(tuple, ef, list_of_stock):
     columnB.info(Descriptions.SHARPE_RATIO)
 
     share = ['Dont Share', 'Share Portfolio']
-    share_choice = c1.radio('Let the world know about this Portfolio', share)
+    share_choice = columnA.radio('Let the world know about this Portfolio', share)
 
     if (share_choice == share[0]):
         columnA.error('Why not let the world benefit from your ideas ? :O')
