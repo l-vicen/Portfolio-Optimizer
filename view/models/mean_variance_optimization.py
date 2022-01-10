@@ -33,12 +33,12 @@ def get_inputs_newbie(c1, c2):
 
     if (search_choice == search[0]):
         tmpListNames = c1.multiselect("Selct all companies you want to have in the portfolio",
-                                    cl.ticker_name(cl.return_list_tickers_only_names()),
+                                    cl.return_list_tickers_only_names(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
 
         st.write(tmpListNames)
-        # st.write(cl.ticker_name(tmpListNames))
+        st.write(return_tickers_from_names(tmpListNames))
 
         # list_of_stocks = return_tickers_from_names(data, names)
         # st.write(list_of_stocks)

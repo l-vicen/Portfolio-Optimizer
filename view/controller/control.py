@@ -35,9 +35,11 @@ from return_list_tickers_names() and
 gives the respective tickers only. 
 """
 def return_tickers_from_names(names):
-    data = return_list_tickers_names()
-    df = data[data.Name.isin(names)]
-    return df['Symbol'].tolist()
+    ticker = []
+
+    for ticker in list:
+            name.append(yf.Ticker(ticker).info['longName']) 
+
 
 def ticker_name(list):
     name = []
