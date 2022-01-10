@@ -7,9 +7,6 @@ import numpy as np
 import controller.plots as myPlots
 import controller.control as cl
 
-import plotly.figure_factory as ff
-import plotly.express as px
-
 import pandas as pd
 import datetime
 
@@ -24,21 +21,12 @@ from inform import Descriptions
 from pypfopt import plotting
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-import scipy.cluster.hierarchy as sch
 
 import seaborn as sns
 from matplotlib import pyplot as plt
 from inform import Descriptions
 
-def hrp_setup_ex():
-
-    """Part [0]: Fist we have to setup the data"""
-
-    st.title('Hierarchical Risk Parity Optimization')
-    c1, c2 = st.columns((2, 1))
-    c2.header('About')
-    c2.info(Descriptions.HRP)
-    c1.header('Setup')
+def hrp_setup_ex(c1, c2):
     
     #Amount of money that should be invested 
     invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = Descriptions.LIST_PORTFOLIO_HELPER)
@@ -48,9 +36,6 @@ def hrp_setup_ex():
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
-
-
-    st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
 
@@ -165,15 +150,7 @@ def hrp_setup_ex():
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
 
 
-
-def hrp_setup_nubie():
-    """Part [0]: Fist we have to setup the data"""
-
-    st.title('Hierarchical Risk Parity Optimization')
-    c1, c2 = st.columns((2, 1))
-    c2.header('About')
-    c2.info(Descriptions.HRP)
-    c1.header('Setup')
+def hrp_setup_nubie(c1, c2):
     
     #Amount of money that should be invested 
     invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = Descriptions.LIST_PORTFOLIO_HELPER)
@@ -183,9 +160,6 @@ def hrp_setup_nubie():
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
-
-
-    st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
 
@@ -251,16 +225,20 @@ def identify_user_experience(c1, c2):
         c1.warning('You have to know who you are before we can start ;)')
     
     elif (experience == users[1]): 
-        hrp_setup_nubie()
+        hrp_setup_nubie(c1, c2)
     
     else: 
-        hrp_setup_ex()
+        hrp_setup_ex(c1, c2)
 
 def hrp_setup(): 
 
+    st.title('Hierarchical Risk Parity Optimization')
     c1, c2 = st.columns((2, 1))
 
     c1.header('Setup')
     identify_user_experience(c1, c2)
+
+    c2.header('About')
+    c2.info(Descriptions.HRP)
 
     st.markdown('---')
