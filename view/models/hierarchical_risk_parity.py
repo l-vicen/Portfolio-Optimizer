@@ -99,20 +99,48 @@ def hrp_setup_ex(c1, c2):
         st.plotly_chart(fig)            
         st.markdown('---')
 
-        # Generate a mask for the upper triangle
-        mask = np.triu(np.ones_like(correlationMatrixCalculated , dtype=bool))
+        r = correlationMatrixCalculated
 
-        cmap = sns.color_palette("viridis", as_cmap=True)
+        mask = np.triu(np.ones_like(r, dtype=bool))
+        rLT = r.mask(mask)
 
-        # Set up the matplotlib figure
-        f, ax2 = plt.subplots(figsize=(11, 9))
+        heat = go.Heatmap(
+            z = rLT,
+            x = rLT.columns.values,
+            y = rLT.columns.values,
+            zmin = - 0.25, # Sets the lower bound of the color domain
+            zmax = 1,
+            xgap = 1, # Sets the horizontal gap (in pixels) between bricks
+            ygap = 1,
+            colorscale = 'RdBu'
+            )
 
-        # Draw the heatmap with the mask and correct aspect ratio
-        sns.heatmap(correlationMatrixCalculated , cmap = cmap, mask=mask,  vmax=.3, center=0,
-            square=True, linewidths=.5, cbar_kws={"shrink": .5})
-        st.pyplot(f)   
-            
+        layout = go.Layout(
+            width=600, 
+            height=600,
+            xaxis_showgrid=False,
+            yaxis_showgrid=False,
+            yaxis_autorange='reversed'
+            )
+
+        fig=go.Figure(data=[heat], layout=layout)
+        st.plotly_chart(fig)            
         st.markdown('---')
+
+        # # Generate a mask for the upper triangle
+        # mask = np.triu(np.ones_like(correlationMatrixCalculated , dtype=bool))
+
+        # cmap = sns.color_palette("viridis", as_cmap=True)
+
+        # # Set up the matplotlib figure
+        # f, ax2 = plt.subplots(figsize=(11, 9))
+
+        # # Draw the heatmap with the mask and correct aspect ratio
+        # sns.heatmap(correlationMatrixCalculated , cmap = cmap, mask=mask,  vmax=.3, center=0,
+        #     square=True, linewidths=.5, cbar_kws={"shrink": .5})
+        # st.pyplot(f)   
+            
+        # st.markdown('---')
 
         """Part[5]: RECURSIVE BISECTION"""
 
