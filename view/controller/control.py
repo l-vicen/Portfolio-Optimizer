@@ -1,6 +1,6 @@
 import yfinance as yf
 import pandas as pd
-from collections import Iterable
+import numpy as np
 
 """
 This function reads in a Nasdaq csv file
@@ -39,7 +39,7 @@ def return_tickers_from_names(names):
     data = return_list_tickers_names()
     df = data[data['Name'].isin(names)]
     df.drop(df.columns[1], axis=1, inplace=True)
-    return df.values.tolist()
+    return df.values.tolist().ravel()
 
 """
 This fuction downloads the adjusted closing price
@@ -77,15 +77,4 @@ backtesting feature.
 def return_closed_prices_time_interval(ticker, start, end):
    return yf.download(ticker, start=start, end=end)
 
-
-""" Nested List to List Converter
-https://stackoverflow.com/questions/17485747/how-to-convert-a-nested-list-into-a-one-dimensional-list-in-python
-"""
-def flatten(lis):
-    for item in lis:
-        if isinstance(item, Iterable) and not isinstance(item, str):
-            for x in flatten(item):
-                yield x
-        else:        
-            yield item
 
