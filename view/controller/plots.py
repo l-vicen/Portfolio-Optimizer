@@ -11,6 +11,7 @@ def plot_performance(tuple, ef, list_of_stock):
     columnA.write("Expected annual return: {}%".format(round(tuple[0] * 100, 2)))
     columnA.write("Annual volatility: {}%".format(round(tuple[1] * 100, 2)))
     columnA.write("Sharpe Ratio: {}".format(round(tuple[2], 2)))
+    columnA.markdown('---')
 
     columnB.header('Informer')
     columnB.info(Descriptions.ANNUAL_VOLATILITY)
