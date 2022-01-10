@@ -114,7 +114,7 @@ def get_inputs_pro(c1, c2):
     return config_dictionary
 
 
-def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
+def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen):
     
     c3, c4 = st.columns((2, 1))
 
@@ -127,13 +127,13 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         and plot data from yahooFinanace. The
         data is on the adjusted closed prices."""
 
-        st.markdown('### Data Retireved')
+        c3.markdown('### Data Retireved')
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
-        st.write(df)
+        c3.write(df)
 
         st.markdown('---')
 
-        st.markdown('### Historical Adjusted Prices')
+        c3.markdown('### Historical Adjusted Prices')
         st.line_chart(df)
 
         st.markdown('---')
