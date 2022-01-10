@@ -24,10 +24,7 @@ import plotly.graph_objects as go
 from inform import Descriptions
 
 def stock_search_selector(list_of_assets, c1):
-
-    list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio",
-                                    list_of_assets)
-
+    list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio", list_of_assets)
     return list_of_stocks
 
 def stock_search_ui(c1, c2):
@@ -37,7 +34,7 @@ def stock_search_ui(c1, c2):
     search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
 
     if (search_choice == search[0]):
-        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_names().to_list())
+        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_only_names(), c1)
         return cl.return_tickers_from_names(list_of_stocks_names)
         
     else:
