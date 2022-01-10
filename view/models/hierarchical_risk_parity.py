@@ -144,7 +144,7 @@ def hrp_setup_ex(c1, c2):
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
-        share_portfolio(ef, list_of_stocks)
+        share_portfolio(hrp.portfolio_performance(), list_of_stocks)
 
 
 def hrp_setup_nubie(c1, c2):
