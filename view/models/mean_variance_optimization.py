@@ -24,8 +24,7 @@ import plotly.graph_objects as go
 from inform import Descriptions
 
 def ui_selector(list_of_assets, c1, c2):
-
-     list_of_stocks = c1.multiselect("Select all companies you want to have in the portfolio",
+    list_of_stocks = c1.multiselect("Select all companies you want to have in the portfolio",
                                     list_of_assets,
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
