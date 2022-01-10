@@ -7,6 +7,8 @@ import pandas as pd
 import datetime
 
 import models_dependencies.covariances as riskMatrix
+import models_dependencies.google_sheet as googleSheet
+
 from inform import Descriptions
 
 from pypfopt import black_litterman, risk_models
@@ -139,7 +141,7 @@ def model_executer_newbie(start_date, init_investment, list_of_stocks, market_pr
         myPlots.plot_performance(performance)
 
         # Decide whether or not to share
-        share_portfolio(ef, list_of_stocks)
+        share_portfolio(bla.portfolio_performance(), list_of_stocks)
 
 def model_executer_pro(start_date, init_investment, list_of_stocks, market_prices, risk_free_rate,  c1, c2):
  
@@ -292,18 +294,18 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
         myPlots.plot_performance(performance)
 
         # Decide whether or not to share
-        share_portfolio(ef, list_of_stocks)
+        share_portfolio(bla.portfolio_performance(), list_of_stocks)
 
-def share_portfolio(ef, list_of_stocks, c1, c2):
+def share_portfolio(bla_performance, list_of_stocks):
     share = ['Dont Share', 'Share Portfolio']
-    share_choice = c1.radio('Let the world know about this Portfolio', share)
+    share_choice = st.radio('Let the world know about this Portfolio', share)
 
     if (share_choice == share[0]):
-        c1.error('Why not let the world benefit from your ideas ? :O')
+        st.error('Why not let the world benefit from your ideas ? :O')
     else:
         # Saving the expected performance from the current portfolio
-        googleSheet.save_expected_performance(bla.portfolio_performance(), list_of_stocks, "BLA")
-        c1.success('Success!')
+        googleSheet.save_expected_performance(bla_performance, list_of_stocks, "BLA")
+        st.success('Success!')
 
 def identify_user_experience(c1, c2):
 
