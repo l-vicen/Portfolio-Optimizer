@@ -1,13 +1,12 @@
 import numpy as np
+from pandas.io.pytables import performance_doc
 import streamlit as st
-from streamlit.type_util import Key
 import controller.control as cl
 import controller.plots as myPlots
 import pandas as pd
 import datetime
 import models_dependencies.covariances as riskMatrix
 
-import models.backtesting as backTest
 from pypfopt import black_litterman, risk_models
 from pypfopt import BlackLittermanModel
 from pypfopt import EfficientFrontier, objective_functions
@@ -16,27 +15,26 @@ from pypfopt import DiscreteAllocation
 import plotly.graph_objects as go
 import plotly.express as px
 
-from inform import Descriptions
-
 def bla_setup():
     st.title('Black-Litterman Allocation')
     
     c1, c2 = st.columns((2, 1))
 
     c2.header('About')
-    c2.info(Descriptions.BLA)
+    c2.info('The Black-Litterman Allocation (BL) was developed by Fisher Black and Robert Litterman in the early 90s at Goldman- Sachs and based on the concepts of Semi-Strong Form Efficiency, CAPM and Bayes’ theorem. It is designed to address the issue of personal view’s inclusion (private information as insights, strategies etc.), which occurs with eg. Mean-Variance- Optimization. BL takes advantage of Bayes’ theorem to integrate a flexible number of views and converts them into explicit forecasts. If there is no “view” on a certain stock, BL retrieves the market equilibrium (CAPM) alone which adds robustness to the model.\n \n Robustness through CAPM & qualifying inputs by personal view/insights rather than constraining optimizer')
+
     c1.header('Setup')
 
     # Start Date
-    start = c1.date_input('Start date', datetime.date(2020, 1, 1))
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
 
     # Initial investment
-    investment_bla = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "bla-init-investment")
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
 
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
-    market_prices = cl.return_closed_prices("SPY", start).dropna(how="all")
+    market_prices = cl.return_closed_prices("SPY", start_date).dropna(how="all")
     
     risk_free_rate = 0.0163
     
@@ -45,7 +43,7 @@ def bla_setup():
     if (len(list_of_stocks) > 0): 
         st.markdown('### Data Retrived')
         # Download price data from desired stocks
-        df = cl.return_closed_prices(list_of_stocks, start).dropna(how="all")
+        df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
         index = df. index
         st.write(df)
         st.markdown('---')
@@ -63,20 +61,30 @@ def bla_setup():
         st.write(dfMarketCap)
         st.markdown('---')
 
-        # st.markdown('### Delta') 
-        # st.write("Every asset in the market portfolio contributes a certain amount of risk to the portfolio. Standard theory suggests that investors must becompensated for the risk that they take, so we can attribute to each asset an expected compensation(i.e prior estimate of returns). This is quantified by the market-implied risk premium, which is the market’s excess return divided by its variance.")
+        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
+        # TODO: Hide this markdown for unprofessional users
+        st.markdown('### Market-implied risk premium') 
+        # TODO: Hide this st.write for unprofessional users
+        st.write("Every asset in the market portfolio contributes a certain amount of risk to the portfolio. Standard theory suggests that investors must becompensated for the risk that they take, so we can attribute to each asset an expected compensation(i.e prior estimate of returns). This is quantified by the market-implied risk premium, which is the market’s excess return divided by its variance.")
         S = risk_models.CovarianceShrinkage(df, frequency=len(index)).ledoit_wolf()
         delta = black_litterman.market_implied_risk_aversion(market_prices, risk_free_rate = risk_free_rate)
-        # st.write(delta)
-        # st.markdown('---')
+        # TODO: Hide this st.write for unprofessional users
+        st.write(delta)
+        st.markdown('---')
 
+        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
+        # TODO: Hide this markdown for unprofessional users
         st.markdown("### Covariance Matrix")
         help = "Calculated by using Covariance Shrinkage Ledoit Wolf"
+        # TODO: Hide this st.write for unprofessional users
         st.write(help)
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(S)
+        # TODO: Hide this st.write for unprofessional users
         st.write(S)
         st.markdown('---')
 
+        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
+        # TODO: Hide this markdown for unprofessional users
         st.markdown("### Correlation Matrix")
         fig1 = go.Figure(data=go.Heatmap(
             z=correlationMatrixCalculated,
@@ -86,18 +94,24 @@ def bla_setup():
             type='heatmap',
             colorscale='Viridis'))
 
+        # TODO: Hide this st.plotly for unprofessional users
         st.plotly_chart(fig1)
         st.markdown('---')
 
+        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
+        # TODO: Hide this markdown for unprofessional users
         st.markdown('### Market prior')
+        # TODO: Hide this st.write for unprofessional users
         st.write("Market prior is market’s estimate of the return, which is embedded into the market capitalisation of the asset. In this case it is calculated by using S&P 500 index for calculating the expected market return rate and FED risk-free rate (currently" + str(risk_free_rate) + ") for calculating the market risk premium. ")
         market_prior = black_litterman.market_implied_prior_returns(marketCap, delta, S, risk_free_rate=risk_free_rate)
+        # TODO: Hide this st.write for unprofessional users
         st.write(market_prior)
 
         fig2 = go.Figure(go.Bar(
             x=market_prior,
             y=list_of_stocks,
             orientation='h'))
+        # TODO: Hide this st.plotly for unprofessional users
         st.plotly_chart(fig2)
         st.markdown('---')
 
@@ -120,20 +134,34 @@ def bla_setup():
             confidences[i] = st.slider('confidence for the view ' + i, min_value=0.01, max_value=1.0, value=0.00, step=0.1, help = help)
         data_items = confidences. items()
         data_list = list(data_items)
-        confidencesDF = pd.DataFrame(data_list, columns = ['Company', 'Confidence'])
+        confidencesDF = pd. DataFrame(data_list, columns = ['Company', 'Confidence'])
         # st.write(confidencesDF)
 
         values_column = list(confidences.values()) # It is only the values list from the confidences dict, it is required like that by later methods from pyport.
         bl = BlackLittermanModel(S, pi=market_prior, absolute_views=viewdict, omega="idzorek", view_confidences=values_column)
         st.markdown('---')
 
-        #st.markdown('### Omega')
+        #st.markdown('### The covariance of the investor views (Omega)')
         omegaSelf = np.diag(bl.omega)
         # st.write(omegaSelf)
         omega=bl.omega
-        #st.markdown('---')
 
+        fig4 = go.Figure(data=go.Heatmap(
+            z=omega,
+            x=list_of_stocks,
+            y=list_of_stocks,
+            hoverongaps=False,
+            type='heatmap',
+            colorscale='Viridis'))
+
+        #st.plotly_chart(fig4)
+
+        st.markdown('---')
+
+         # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
+        # TODO: Hide this markdown for unprofessional users
         st.markdown('### Posterior estimates')
+        # TODO: Hide this st.write for unprofessional users
         st.write("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
         # We are using the shortcut to automatically compute market-implied prior
         bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
@@ -144,10 +172,12 @@ def bla_setup():
         # Calculate the posterior estimate of the returns vector, given views on some assets
         rets_df = pd.DataFrame([market_prior, ret_bl, pd.Series(viewdict)],
                                index=["Prior", "Posterior", "Views"]).T
+        # TODO: Hide this st.write for unprofessional users
         st.write(rets_df)
         S_bl = bl.bl_cov()
 
         fig3 = px.histogram(rets_df, x=rets_df.index, y=["Prior", "Posterior", "Views"], barmode='group', labels=dict(x="Companies", y="Estimates", color="Estimates"))
+        # TODO: Hide this st.plotly for unprofessional users
         st.plotly_chart(fig3)
         st.markdown('---')
 
@@ -162,14 +192,8 @@ def bla_setup():
         st.write(weightsDF)
         st.markdown('---')
 
-        st.markdown('### Portfolio performance')
-        bl.bl_weights(risk_aversion=None)
-        performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
-        myPlots.plot_performance(performance)
-        st.markdown('---')
-
         st.markdown('### Discrete allocation')
-        da = DiscreteAllocation(weights, df.iloc[-1], total_portfolio_value = investment_bla)
+        da = DiscreteAllocation(weights, df.iloc[-1], total_portfolio_value=init_investment)
         alloc, leftover = da.lp_portfolio()
         data_items = alloc.items()
         data_list = list(data_items)
@@ -178,4 +202,8 @@ def bla_setup():
         st.write(f"Leftover: ${leftover:.2f}")
         st.markdown('---')
 
-        backTest.backtesting_setup(start, list_of_stocks, weights, c1, c2)
+        st.markdown('### Portfolio performance')
+        bl.bl_weights(risk_aversion=None)
+        performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
+        myPlots.plot_performance(performance)
+        st.markdown('---')

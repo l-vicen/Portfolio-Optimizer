@@ -28,15 +28,20 @@ import scipy.cluster.hierarchy as sch
 
 import seaborn as sns
 from matplotlib import pyplot as plt
+from inform import Descriptions
 
-def hrp_setup():
+def hrp_setup_ex():
+
+    """Part [0]: Fist we have to setup the data"""
+
     st.title('Hierarchical Risk Parity Optimization')
     c1, c2 = st.columns((2, 1))
     c2.header('About')
     c2.info(Descriptions.HRP)
     c1.header('Setup')
-
-    invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = "choose how much money you want to invest ")
+    
+    #Amount of money that should be invested 
+    invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = Descriptions.LIST_PORTFOLIO_HELPER)
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
@@ -49,83 +54,112 @@ def hrp_setup():
 
     if (len(list_of_stocks) > 0): 
 
+        """Part[1]: We load the corresponding data for the selected tickers from yahoo finance and plot this data"""
+
         st.markdown('### Data Retireved')
+
+        #Historical Adjusted Prices in table form 
+
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
-        st.write(df)
+        st.write(np.log10(df))
 
         st.markdown('---')
 
-        st.markdown('### Historical Adjusted Prices')
-        st.line_chart(df)
-        rets = expected_returns.returns_from_prices(df)
+        st.markdown('### Historical Adjusted Prices *')
 
+        #Historical Adjusted Prices in graph form. Please note that a log scale is used 
+
+        st.line_chart(np.log10(df))
+        st.markdown('_*log scale is used_')
+
+        st.markdown('---')
+
+        """Part[2]: We perform the HRP using HROPT from pypfopt"""
+
+        rets = expected_returns.returns_from_prices(df)
         hrp = HRPOpt(rets)
         hrp.optimize()
         weights = hrp.clean_weights()
 
-        st.markdown('---')
+        """Part[3]: Tree Clustering"""
         
-        st.markdown('### 1. TREE CLUSTERING')
-        st.markdown("In this part similar investments are grouped together based on their correlation matrix. This step breaks down the  assets in our portfolio into different hierarchical clusters using the famous Hierarchical Tree Clustering algorithm")
-
+        st.markdown('### 1. Tree Clustering')
+        st.info(Descriptions.HRP_TREE_CLUSTERING)
         fig, ax = plt.subplots() 
         ax = plotting.plot_dendrogram(hrp)
         st.pyplot(fig)
-
-        """ Alternative way to plot the dendogram """
-        # ax = plt.gca()
-        # sch.dendrogram(hrp.clusters, labels=hrp.tickers, ax=ax, orientation="top")
-        # ax.tick_params(axis="x", rotation=90)
-        # plt.tight_layout()
-        # st.pyplot(ax)
-
         st.markdown('---')
-        st.markdown('### 2. QUASI DIAGONALIZATION')
-        st.markdown("In this part it is nothing more than a simple seriation algorithm. A statistical technique which is used to rearrange the data to show the inherent clusters clearly")
 
+        """Part[4]: QUASI DIAGONALIZATION"""
+
+        st.markdown('### 2. Quasi Diagonalization')
+        st.info(Descriptions.HRP_QUASI_DIAGNALIZATION)
+
+        # Compute Correlation matrix 
         covarianceMatrixCalculated = riskMatrix.calculate_covariance_according_to(df, "Sample Covariance")
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(covarianceMatrixCalculated)
         st.write(correlationMatrixCalculated) 
 
-        # Compute the correlation matrix
-        corr = correlationMatrixCalculated 
+        # Plot Heatmap
+        fig = go.Figure(data=go.Heatmap(
+                z= correlationMatrixCalculated,
+                x= list_of_stocks,
+                y= list_of_stocks,
+                hoverongaps = False, 
+                type = 'heatmap',
+                colorscale = 'Viridis'))
+
+        st.plotly_chart(fig)            
+        st.markdown('---')
 
         # Generate a mask for the upper triangle
-        mask = np.triu(np.ones_like(corr, dtype=bool))
+        mask = np.triu(np.ones_like(correlationMatrixCalculated , dtype=bool))
+
+        cmap = sns.color_palette("viridis", as_cmap=True)
 
         # Set up the matplotlib figure
         f, ax2 = plt.subplots(figsize=(11, 9))
 
-        #        Generate a custom diverging colormap
-        cmap = sns.diverging_palette(230, 20, as_cmap=True)
-
         # Draw the heatmap with the mask and correct aspect ratio
-        sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+        sns.heatmap(correlationMatrixCalculated , cmap = cmap, mask=mask,  vmax=.3, center=0,
             square=True, linewidths=.5, cbar_kws={"shrink": .5})
-        
         st.pyplot(f)   
-
-        #copyOfDf = df.iloc[:,1:] 
-        #st.write(copyOfDf)
-        #ax2 = sns.clustermap(copyOfDf, metric="euclidean", standard_scale=1, method="single")
             
         st.markdown('---')
 
-        st.markdown('### 3. RECURSIVE BISECTION')
-        st.markdown("The final step of the algorithm then calculates the weight for each of the assets using a recursive bi-sectioning procedure of the reordered covariance matrix")
+        """Part[5]: RECURSIVE BISECTION"""
 
+        st.markdown('### 3. Recursive Bisection')
+        st.info(Descriptions.HRP_RECURSIVE_BISECTION)
+
+        # Plot weights 
         st.bar_chart(pd.Series(weights))
+
+        # show weighs 
         st.write(weights)
 
         st.markdown('---')
+
+        """Part[6]: Spare Porfolio Performance 
+        Overview based on 3 KPIs: expected return, 
+        annual volatility and sharpe ratio"""
+
         st.markdown('### 4. EXPECTED PERFORMANCE')
+
+        # Show descriptions of the different KPIs
+
+        st.info(Descriptions.ANNUAL_EXPECTEd_RETURN)
+        st.info(Descriptions.ANNUAL_VOLATILITY)
+        st.info(Descriptions.SHARPE_RATIO)
+
+        # Show calculated KPIs
 
         myPlots.plot_performance(hrp.portfolio_performance(verbose=True))
 
         st.markdown('---')
-        st.markdown('### 5. Backtesting')
 
-        
+        """Part[7]: Backtesting Portfolio vs. SPY"""
+        st.markdown('### 5. Backtesting')
         weightValues = weights.values()
         weightValuesList = list(weightValues)
         backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
@@ -133,13 +167,16 @@ def hrp_setup():
 
 
 def hrp_setup_nubie():
+    """Part [0]: Fist we have to setup the data"""
+
     st.title('Hierarchical Risk Parity Optimization')
     c1, c2 = st.columns((2, 1))
     c2.header('About')
     c2.info(Descriptions.HRP)
     c1.header('Setup')
-
-    invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = "choose how much money you want to invest ")
+    
+    #Amount of money that should be invested 
+    invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = Descriptions.LIST_PORTFOLIO_HELPER)
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
@@ -147,37 +184,64 @@ def hrp_setup_nubie():
     # List of Stocks
     list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
 
+
     st.markdown('---')
 
     if (len(list_of_stocks) > 0): 
 
+        """Part[1]: We load the corresponding data for the selected tickers from yahoo finance and plot this data"""
+
         st.markdown('### Data Retireved')
+
+        #Historical Adjusted Prices in table form 
+
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
+        st.write(np.log10(df))
 
         st.markdown('---')
 
-        st.markdown('### Historical Adjusted Prices')
-        st.line_chart(df)
+        st.markdown('### Historical Adjusted Prices *')
+
+        #Historical Adjusted Prices in graph form. Please note that a log scale is used 
+
+        st.line_chart(np.log10(df))
+        st.markdown('_*log scale is used_')
 
         st.markdown('---')
+
+        """Part[2]: We perform the HRP using HROPT from pypfopt"""
+
         rets = expected_returns.returns_from_prices(df)
-
         hrp = HRPOpt(rets)
         hrp.optimize()
         weights = hrp.clean_weights()
 
-        st.markdown('---')
+        """Part[3]: Spare Porfolio Performance 
+        Overview based on 3 KPIs: expected return, 
+        annual volatility and sharpe ratio"""
 
-        st.markdown('### EXPECTED PERFORMANCE')
+        st.markdown('### Expected Performance')
+
+        # Show descriptions of the different KPIs
+
+        st.info(Descriptions.ANNUAL_EXPECTEd_RETURN)
+        st.info(Descriptions.ANNUAL_VOLATILITY)
+        st.info(Descriptions.SHARPE_RATIO)
+
+        # Show calculated KPIs
 
         myPlots.plot_performance(hrp.portfolio_performance(verbose=True))
 
-        st.markdown('---')
+        """Part[4]: Asset Distribution"""
 
-        st.markdown('### ASSET DISTRIBUTION')
+        st.markdown('### Asset Distribution')
+
+        # Plot weights 
         st.bar_chart(pd.Series(weights))
-        st.write(weights) 
- 
+
+        # show weighs 
+        st.write(weights)
+
 def identify_user_experience(c1, c2):
 
     users = ['I dont even know who I am', 'I am a newbie', 'Go ProInvestor Experience']
@@ -186,18 +250,17 @@ def identify_user_experience(c1, c2):
     if (experience == users[0]):
         c1.warning('You have to know who you are before we can start ;)')
     
-    if (experience == users[1]): 
+    elif (experience == users[1]): 
         hrp_setup_nubie()
     
     else: 
-        hrp_setup()
+        hrp_setup_ex()
 
+def hrp_setup(): 
 
-        
+    c1, c2 = st.columns((2, 1))
 
-    
-        
+    c1.header('Setup')
+    identify_user_experience(c1, c2)
 
-        
-
-
+    st.markdown('---')
