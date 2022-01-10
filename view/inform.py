@@ -98,7 +98,7 @@ class Descriptions:
     ANNUAL_VOLATILITY = 'Annual volatility describes the variation in portfolio’s value over the course of a year. This measure indicates \
         the level of risk associated with an investment.'
 
-    ANNUAL_EXPECTEd_RETURN = 'The annual expected return is the anticipated loss or profit on the portfolio. '
+    ANNUAL_EXPECTED_RETURN = 'The annual expected return is the anticipated loss or profit on the portfolio. '
 
     SHARPE_RATIO = 'The Sharpe ratio is an index for the performance of the portfolio. A positive Sharpe ratio indicates the outperformance \
         of the portfolio over the risk-free-return . It is defined as the risk-free return subtracted from the expected return divided by the \
