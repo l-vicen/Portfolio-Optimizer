@@ -39,7 +39,7 @@ def stock_search(c1, c2):
 
     if (search_choice == search[0]):
 
-        ui_selector(cl.return_list_tickers_only_names(), c1, c2)
+        list_of_stocks_names = ui_selector(cl.return_list_tickers_only_names(), c1, c2)
     
         list_of_stocks = cl.return_tickers_from_names(list_of_stocks_names)
         st.write(list_of_stocks)
