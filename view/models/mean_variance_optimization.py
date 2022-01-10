@@ -23,11 +23,7 @@ import plotly.graph_objects as go
 
 from inform import Descriptions
 
-
-def get_inputs_newbie(c1, c2):
-    
-    # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
+def stock_search(c1, c2):
 
     # List of Stocks
     search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
@@ -38,12 +34,14 @@ def get_inputs_newbie(c1, c2):
                                     cl.return_list_tickers_only_names(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
-
+        
         st.write(tmpListNames)
         st.write(cl.return_tickers_from_names(tmpListNames))
 
         list_of_stocks = cl.return_tickers_from_names(tmpListNames)
         st.write(list_of_stocks)
+
+        return list_of_stocks
 
     else:
         list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
@@ -51,6 +49,18 @@ def get_inputs_newbie(c1, c2):
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
 
+        return list_of_stocks
+
+
+
+def get_inputs_newbie(c1, c2):
+    
+    # Start Date
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
+
+    # List of Stocks
+    list_of_stocks = stock_search(c1, c2)
+    
     c1.warning('Default Methods used: Mean Historical Return & Sample Covariance')
 
     # Pick Objective Functions
@@ -75,26 +85,6 @@ def get_inputs_pro(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
-
-    search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
-    search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
-   
-    if (search_choice == search[0]):
-         tmpListNames = c1.multiselect("Selct all companies you want to have in the portfolio",
-                                    cl.return_list_tickers_only_names(),
-                                    default=googleSheet.load_tickers(),
-                                    on_change=googleSheet.change())
-        st.write(tmpListNames)
-        st.write(cl.return_tickers_from_names(tmpListNames))
-
-        list_of_stocks = cl.return_tickers_from_names(tmpListNames)
-        st.write(list_of_stocks)
-
-    else:
-        list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
-                                    cl.return_list_tickers(),
-                                    default=googleSheet.load_tickers(),
-                                    on_change=googleSheet.change())
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
