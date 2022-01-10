@@ -3,7 +3,7 @@ from inform import Descriptions
 
 import models_dependencies.google_sheet as googleSheet
 
-def plot_performance(tuple, ef, list_of_stock):
+def plot_performance(tuple):
 
     columnA, columnB = st.columns((2, 1))
 

@@ -185,7 +185,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         """[PART 4] Spare Porfolio Performance 
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio."""
-        myPlots.plot_performance(ef.portfolio_performance(verbose=True), ef, list_of_stocks)
+        myPlots.plot_performance(ef.portfolio_performance(verbose=True))
         st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
