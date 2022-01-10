@@ -39,7 +39,7 @@ def return_tickers_from_names(names):
     data = return_list_tickers_names()
     df = data[data['Name'].isin(names)]
     df.drop(df.columns[1], axis=1, inplace=True)
-    return flatten(df.values.tolist())
+    return df.values.tolist()
 
 """
 This fuction downloads the adjusted closing price
