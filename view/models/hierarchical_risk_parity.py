@@ -26,6 +26,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from inform import Descriptions
 
+import models_dependencies.google_sheet as googleSheet
+
 def hrp_setup_ex(c1, c2):
     
     #Amount of money that should be invested 
