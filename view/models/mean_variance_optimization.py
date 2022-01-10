@@ -308,11 +308,11 @@ def identify_user_experience(c1, c2):
 
     elif (experience == users[1]):
         newbie_config = get_inputs_newbie(c1, c2)
-        model_executer(newbie_config.get('start_date'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), c1, c2)
+        model_executer(newbie_config.get('start_date'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'))
 
     else:
         pro_config = get_inputs_pro(c1, c2)
-        model_executer(pro_config.get('start_date'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), c1, c2)
+        model_executer(pro_config.get('start_date'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'))
         
 def mean_variance_setup():
 
