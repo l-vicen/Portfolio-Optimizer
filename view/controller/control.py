@@ -36,14 +36,14 @@ from return_list_tickers_names() and
 gives the respective tickers only. 
 """
 def return_tickers_from_names(names):
-    
+
     data = return_list_tickers_names()
     df = data[data['Name'].isin(names)]
     df.drop(df.columns[1], axis=1, inplace=True)
     nestedArray = df.values.tolist()
     arr = np.array(nestedArray)
 
-    return arr.reshape([1, len(df['Name'])])
+    return arr.reshape([1, len(arr)])
 
 """
 This fuction downloads the adjusted closing price
