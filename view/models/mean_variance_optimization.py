@@ -28,7 +28,6 @@ def get_inputs_newbie(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
-
     search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
     search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
 
@@ -38,7 +37,7 @@ def get_inputs_newbie(c1, c2):
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
         st.write(tmpListNames)
-        list_of_stocks = return_tickers_from_names(tmpListNames)
+        list_of_stocks = return_tickers_from_names(cl.return_list_tickers_names(), tmpListNames)
         st.write(list_of_stocks)
 
     else:
