@@ -134,7 +134,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         st.markdown('---')
 
         c3.markdown('### Historical Adjusted Prices')
-        st.line_chart(df)
+        c3.line_chart(df)
 
         st.markdown('---')
 
@@ -143,10 +143,10 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         and according to specific covariance method 
         selected. """
 
-        st.markdown("### Correlation Matrix")
+        c3.markdown("### Correlation Matrix")
         covarianceMatrixCalculated = riskMatrix.calculate_covariance_according_to(df, covariance_method_choosen)
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(covarianceMatrixCalculated)
-        st.write(correlationMatrixCalculated)
+        c3.write(correlationMatrixCalculated)
 
         fig = go.Figure(data=go.Heatmap(
                 z= correlationMatrixCalculated,
@@ -156,7 +156,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
                 type = 'heatmap',
                 colorscale = 'Viridis'))
 
-        st.plotly_chart(fig)            
+        c3.plotly_chart(fig)            
         st.markdown('---')
 
 
@@ -165,29 +165,29 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         and according to specific expected return
         method selected. """
 
-        st.markdown('### Expected Returns')
+        c3.markdown('### Expected Returns')
         expectedReturnCalculated = expectedReturn.calculate_expected_return_according_to(df, expected_return_method_choosen)
-        st.write(expectedReturnCalculated)
-        st.bar_chart(expectedReturnCalculated)
+        c3.write(expectedReturnCalculated)
+        c3.bar_chart(expectedReturnCalculated)
         st.markdown('---')
 
         """[PART 3] In this part we run the optimization
         setup selected in setup. """
 
-        st.markdown('### Asset Distribution')
+        c3.markdown('### Asset Distribution')
 
         ef = objective.calculate_asset_distribution_according_to(objective_function_choosen, add_regularization, tunning_factor_choosen ,expected_returns = expectedReturnCalculated, covariance_matrix = covarianceMatrixCalculated)
 
         asset_distribution = ef.clean_weights()
-        st.write(asset_distribution)
-        st.bar_chart(pd.Series(asset_distribution))
-        st.markdown('---')
+        c3.write(asset_distribution)
+        c3.bar_chart(pd.Series(asset_distribution))
+        c3.markdown('---')
 
         """[PART 4] Spare Porfolio Performance 
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio."""
 
-        st.markdown('##### Annual Performance Expectations')
+        c3.markdown('##### Annual Performance Expectations')
         myPlots.plot_performance(ef.portfolio_performance(verbose=True))
 
         # Saving the expected performance from the current portfolio
@@ -208,7 +208,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         latest_prices = df.iloc[-1]  # prices as of the day you are allocating
         discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value=20000, short_ratio=0.3)
         allocation, leftover = discreteAllocation.lp_portfolio()
-        st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
+        c3.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
         st.write(allocation)
 
          
