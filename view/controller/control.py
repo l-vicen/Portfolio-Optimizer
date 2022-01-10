@@ -44,8 +44,7 @@ def return_tickers_from_names(names):
 
     data = return_list_tickers_names()
     df = data[data['Name'].isin(names)]
-    df.drop(df.columns[1], axis=1, inplace=True)
-    nestedArray = df.values.tolist()
+    nestedArray = df['Symbol'].values.tolist()
     arr = np.array(nestedArray)
 
     return arr.flatten().tolist()

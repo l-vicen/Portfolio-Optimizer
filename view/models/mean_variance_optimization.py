@@ -31,12 +31,14 @@ def stock_search(c1, c2):
 
     if (search_choice == search[0]):
 
-        list_of_stocks = c1.multiselect("Selct all companies you want to have in the portfolio",
-                                    cl.return_list_tickers_only_names(),
+        companies_name = cl.return_list_tickers_only_names()
+        list_of_stocks_names = c1.multiselect("Selct all companies you want to have in the portfolio",
+                                   companies_name,
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
 
-        st.write(list_of_stocks)
+
+        st.write(list_of_stocks_names)
         return list_of_stocks
 
     else:
