@@ -23,6 +23,16 @@ import plotly.graph_objects as go
 
 from inform import Descriptions
 
+def ui_selector(list_of_assets, c1, c2):
+
+     list_of_stocks = c1.multiselect("Select all companies you want to have in the portfolio",
+                                    list_of_assets,
+                                    default=googleSheet.load_tickers(),
+                                    on_change=googleSheet.change())
+
+    return list_of_stocks
+
+
 def stock_search(c1, c2):
 
     # List of Stocks
@@ -31,23 +41,15 @@ def stock_search(c1, c2):
 
     if (search_choice == search[0]):
 
-        companies_name = cl.return_list_tickers_only_names()
-        list_of_stocks_names = c1.multiselect("Selct all companies you want to have in the portfolio",
-                                   companies_name,
-                                    default=googleSheet.load_tickers(),
-                                    on_change=googleSheet.change())
-
-
-        st.write(list_of_stocks_names)
-
-        return cl.return_tickers_from_names(list_of_stocks_names)
+        ui_selector(cl.return_list_tickers_only_names(), c1, c2)
+    
+        list_of_stocks = cl.return_tickers_from_names(list_of_stocks_names)
+        st.write(list_of_stocks)
+        return list_of_stocks
 
     else:
-        list_of_stocks = c1.multiselect("Select all tickers you want to have in the portfolio",
-                                    cl.return_list_tickers(),
-                                    default=googleSheet.load_tickers(),
-                                    on_change=googleSheet.change())
 
+        ui_selector(cl.return_list_tickers(), c1, c2)
         
         st.write(list_of_stocks)
         return list_of_stocks
