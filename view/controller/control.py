@@ -50,6 +50,12 @@ def return_tickers_from_names(names):
 
     return arr.flatten().tolist()
 
+def return_tickers_from_names_david(names):
+    data = return_list_tickers_names()
+    df = data[data.Name.isin(names)]
+    return df['Symbol'].tolist()
+
+
 """
 This fuction downloads the adjusted closing price
 of a list of stocks given since a respective date.
