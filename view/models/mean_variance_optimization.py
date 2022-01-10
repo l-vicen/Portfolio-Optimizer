@@ -284,7 +284,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         weightValuesList = list(weightValues)
 
         """[PART 7] Backtesting Portfolio vs. SPY"""
-        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c1, c2)
+        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList, c3, c4)
 
 
 def share_portfolio(ef, list_of_stocks, c1, c2):
