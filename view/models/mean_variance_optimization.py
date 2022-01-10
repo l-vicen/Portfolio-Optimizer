@@ -35,12 +35,7 @@ def stock_search(c1, c2):
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
         
-        st.write(tmpListNames)
-        st.write(cl.return_tickers_from_names(tmpListNames))
-
-        list_of_stocks = cl.return_tickers_from_names(tmpListNames)
         st.write(list_of_stocks)
-
         return list_of_stocks
 
     else:
@@ -49,9 +44,9 @@ def stock_search(c1, c2):
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
 
+        
+        st.write(list_of_stocks)
         return list_of_stocks
-
-
 
 def get_inputs_newbie(c1, c2):
     
@@ -85,6 +80,7 @@ def get_inputs_pro(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
 
     # List of Stocks
+    list_of_stocks = stock_search(c1, c2)
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
