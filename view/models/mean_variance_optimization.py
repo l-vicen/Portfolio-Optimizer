@@ -31,7 +31,6 @@ def ui_selector(list_of_assets, c1, c2):
 
     return list_of_stocks
 
-
 def stock_search(c1, c2):
 
     # List of Stocks
@@ -47,9 +46,7 @@ def stock_search(c1, c2):
         return list_of_stocks
 
     else:
-
-        ui_selector(cl.return_list_tickers(), c1, c2)
-        
+        list_of_stocks = ui_selector(cl.return_list_tickers(), c1, c2)
         st.write(list_of_stocks)
         return list_of_stocks
 
