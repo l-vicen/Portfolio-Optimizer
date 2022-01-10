@@ -2,6 +2,21 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
+def return_list_tickers_names():
+    # TODO path to csv file has to be updated
+    data = pd.read_csv("data/symbols.csv",
+                       usecols=['Symbol', 'Name'])
+    return data
+
+def return_tickers_from_names(names):
+    data = return_list_tickers_names()
+    df = data[data.Name.isin(names)]
+    return df['Symbol'].tolist()
+
+
+def return_closed_prices_names(names, date):
+    return return_closed_prices(return_tickers_from_names(names), date)
+
 """
 This function reads in a Nasdaq csv file
 containing information about stocks listed 
