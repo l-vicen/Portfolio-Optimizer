@@ -38,6 +38,14 @@ def return_tickers_from_names(names):
     df = data[data.Name.isin(names)]
     return df['Symbol'].tolist()
 
+def ticker_name(list):
+    name = []
+
+    for ticker in list:
+        name.append(yf.Ticker(ticker).info['longName'])
+
+    return name
+
 """
 This fuction downloads the adjusted closing price
 of a list of stocks given since a respective date.
