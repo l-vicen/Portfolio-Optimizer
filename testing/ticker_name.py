@@ -5,7 +5,7 @@ def ticker_name(list):
     name = []
 
     for ticker in list:
-        name.append(yf.Ticker(ticker).info['longName'])
+        name.append(yf.Ticker(ticker).info['Name'])
 
     return name
 
