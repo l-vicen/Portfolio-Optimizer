@@ -40,8 +40,8 @@ def get_inputs_newbie(c1, c2):
         st.write(tmpListNames)
         st.write(cl.return_tickers_from_names(tmpListNames))
 
-        # list_of_stocks = return_tickers_from_names(data, names)
-        # st.write(list_of_stocks)
+        list_of_stocks = cl.return_tickers_from_names(tmpListNames)
+        st.write(list_of_stocks)
 
     else:
         list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio",
