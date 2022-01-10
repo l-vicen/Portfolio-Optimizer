@@ -39,7 +39,7 @@ def stock_search_ui(c1, c2):
     search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
 
     if (search_choice == search[0]):
-        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_only_names(), c1)
+        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_names().to_list())
         return cl.return_tickers_from_names(list_of_stocks_names)
         
     else:
@@ -120,7 +120,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
     if len(list_of_stocks) > 0:
 
         # Save current portfolio
-        googleSheet.save_tickers(list_of_stocks)
+        # googleSheet.save_tickers(list_of_stocks)
 
         """[PART 0] In this part we retrieve 
         and plot data from yahooFinanace. The
