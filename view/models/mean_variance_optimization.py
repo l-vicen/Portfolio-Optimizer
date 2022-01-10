@@ -37,7 +37,7 @@ def get_inputs_newbie(c1, c2):
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
         st.write(tmpListNames)
-        st.write(return_tickers_from_names(data, names))
+        st.write(return_tickers_from_names(tmpListNames))
 
         # list_of_stocks = return_tickers_from_names(data, names)
         # st.write(list_of_stocks)
