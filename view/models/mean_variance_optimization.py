@@ -39,7 +39,8 @@ def stock_search(c1, c2):
 
 
         st.write(list_of_stocks_names)
-        return list_of_stocks
+
+        return cl.return_tickers_from_names(list_of_stocks_names)
 
     else:
         list_of_stocks = c1.multiselect("Select all tickers you want to have in the portfolio",
