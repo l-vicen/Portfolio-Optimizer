@@ -6,11 +6,13 @@ import datetime
 
 from inform import Descriptions
 
-def backtesting_setup(start, tickers, allocations, c1, c2):
+def backtesting_setup(start, tickers, allocations):
 
     c3, c4= st.columns((2, 1))
 
     c3.markdown('### Backtesting')
+
+    c4.markdown('### Informer')
     c4.info(Descriptions.BACKTESTING)
 
     # End Date 
