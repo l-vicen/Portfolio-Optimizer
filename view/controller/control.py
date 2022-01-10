@@ -26,7 +26,7 @@ def return_list_tickers_names():
 
 def return_list_tickers_only_names():
     data = pd.read_csv("data/symbols.csv", usecols=['Name'])
-    return data
+    return data['Name'].toList()
 
 """
 This function reads the cleaned .csv
