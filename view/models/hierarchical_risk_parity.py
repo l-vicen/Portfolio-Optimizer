@@ -204,9 +204,9 @@ def hrp_setup_nubie(c1, c2):
         st.write(weights)
 
         # Decide whether or not to share
-        share_portfolio(hrp, list_of_stocks)
+        share_portfolio(hrp.portfolio_performance(), list_of_stocks)
 
-def share_portfolio(hrp, list_of_stocks):
+def share_portfolio(hrp_performance, list_of_stocks):
 
     share = ['Dont Share', 'Share Portfolio']
     share_choice = st.radio('Let the world know about this Portfolio', share)
@@ -215,7 +215,7 @@ def share_portfolio(hrp, list_of_stocks):
         st.error('Why not let the world benefit from your ideas ? :O')
     else:
         # Saving the expected performance from the current portfolio
-        googleSheet.save_expected_performance(hrp.portfolio_performance(), list_of_stocks, "HRP")
+        googleSheet.save_expected_performance(hrp_performance, list_of_stocks, "HRP")
         st.success('Success!')
 
 def identify_user_experience(c1, c2):
