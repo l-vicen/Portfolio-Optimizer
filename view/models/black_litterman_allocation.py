@@ -17,9 +17,8 @@ from pypfopt import DiscreteAllocation
 import plotly.graph_objects as go
 import plotly.express as px
 
+def get_inputs(c1, c2):
 
-def model_executer_newbie(c1, c2):
- 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
 
@@ -32,8 +31,21 @@ def model_executer_newbie(c1, c2):
     market_prices = cl.return_closed_prices("SPY", start_date).dropna(how="all")
     
     risk_free_rate = 0.0163
-    
+
+    config_dictionary = dict(); 
+    config_dictionary['start_date'] = start_date
+    config_dictionary['init_investment'] = init_investment
+    config_dictionary['list_of_stocks'] = list_of_stocks
+    config_dictionary['market_prices'] = market_prices
+    config_dictionary['risk_free_rate'] = risk_free_rate
+
+    return config_dictionary
+
+
+def model_executer_newbie(start_date, init_investment, list_of_stocks, market_prices, risk_free_rate,  c1, c2):
+
     if (len(list_of_stocks) > 0): 
+        st.markdown('---')
         st.markdown('### Data Retrived')
         # Download price data from desired stocks
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
@@ -54,59 +66,12 @@ def model_executer_newbie(c1, c2):
         st.write(dfMarketCap)
         st.markdown('---')
 
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
-        #st.markdown('### Market-implied risk premium') 
-        # TODO: Hide this st.write for unprofessional users
-        #st.write("Every asset in the market portfolio contributes a certain amount of risk to the portfolio. Standard theory suggests that investors must becompensated for the risk that they take, so we can attribute to each asset an expected compensation(i.e prior estimate of returns). This is quantified by the market-implied risk premium, which is the market’s excess return divided by its variance.")
         S = risk_models.CovarianceShrinkage(df, frequency=len(index)).ledoit_wolf()
         delta = black_litterman.market_implied_risk_aversion(market_prices, risk_free_rate = risk_free_rate)
-        # TODO: Hide this st.write for unprofessional users
-        #st.write(delta)
-        st.markdown('---')
-
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
-        #st.markdown("### Covariance Matrix")
-        help = "Calculated by using Covariance Shrinkage Ledoit Wolf"
-        # TODO: Hide this st.write for unprofessional users
-        #st.write(help)
+  
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(S)
-        # TODO: Hide this st.write for unprofessional users
-        #st.write(S)
-        st.markdown('---')
 
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
-        #st.markdown("### Correlation Matrix")
-        fig1 = go.Figure(data=go.Heatmap(
-            z=correlationMatrixCalculated,
-            x=list_of_stocks,
-            y=list_of_stocks,
-            hoverongaps=False,
-            type='heatmap',
-            colorscale='Viridis'))
-
-        # TODO: Hide this st.plotly for unprofessional users
-        #st.plotly_chart(fig1)
-        st.markdown('---')
-
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
-        #st.markdown('### Market prior')
-        # TODO: Hide this st.write for unprofessional users
-        #st.write("Market prior is market’s estimate of the return, which is embedded into the market capitalisation of the asset. In this case it is calculated by using S&P 500 index for calculating the expected market return rate and FED risk-free rate (currently" + str(risk_free_rate) + ") for calculating the market risk premium. ")
         market_prior = black_litterman.market_implied_prior_returns(marketCap, delta, S, risk_free_rate=risk_free_rate)
-        # TODO: Hide this st.write for unprofessional users
-        #st.write(market_prior)
-
-        fig2 = go.Figure(go.Bar(
-            x=market_prior,
-            y=list_of_stocks,
-            orientation='h'))
-        # TODO: Hide this st.plotly for unprofessional users
-        #st.plotly_chart(fig2)
-        st.markdown('---')
 
         st.markdown('### Absolute views / expectations')
         viewdict = {}
@@ -116,7 +81,6 @@ def model_executer_newbie(c1, c2):
         data_items = viewdict. items()
         data_list = list(data_items)
         viewdictDF = pd. DataFrame(data_list, columns = ['Company', 'View'])
-        # st.write(viewdictDF)
         bl = BlackLittermanModel(S, pi=market_prior, absolute_views=viewdict)
         st.markdown('---')
 
@@ -128,50 +92,24 @@ def model_executer_newbie(c1, c2):
         data_items = confidences. items()
         data_list = list(data_items)
         confidencesDF = pd. DataFrame(data_list, columns = ['Company', 'Confidence'])
-        # st.write(confidencesDF)
 
         values_column = list(confidences.values()) # It is only the values list from the confidences dict, it is required like that by later methods from pyport.
         bl = BlackLittermanModel(S, pi=market_prior, absolute_views=viewdict, omega="idzorek", view_confidences=values_column)
         st.markdown('---')
 
-        #st.markdown('### The covariance of the investor views (Omega)')
         omegaSelf = np.diag(bl.omega)
-        # st.write(omegaSelf)
         omega=bl.omega
 
-        fig4 = go.Figure(data=go.Heatmap(
-            z=omega,
-            x=list_of_stocks,
-            y=list_of_stocks,
-            hoverongaps=False,
-            type='heatmap',
-            colorscale='Viridis'))
-
-        #st.plotly_chart(fig4)
-
-        st.markdown('---')
-
-         # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
-        #st.markdown('### Posterior estimates')
-        # TODO: Hide this st.write for unprofessional users
-        #st.write("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
-        # We are using the shortcut to automatically compute market-implied prior
         bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
-        # Posterior estimate of returns
         ret_bl = bl.bl_returns()
-        #st.write(ret_bl)
 
         # Calculate the posterior estimate of the returns vector, given views on some assets
         rets_df = pd.DataFrame([market_prior, ret_bl, pd.Series(viewdict)],
                                index=["Prior", "Posterior", "Views"]).T
-        # TODO: Hide this st.write for unprofessional users
         st.write(rets_df)
         S_bl = bl.bl_cov()
 
         fig3 = px.histogram(rets_df, x=rets_df.index, y=["Prior", "Posterior", "Views"], barmode='group', labels=dict(x="Companies", y="Estimates", color="Estimates"))
-        # TODO: Hide this st.plotly for unprofessional users
-        #st.plotly_chart(fig3)
         st.markdown('---')
 
         st.markdown('### Portfolio allocation')
@@ -199,23 +137,9 @@ def model_executer_newbie(c1, c2):
         bl.bl_weights(risk_aversion=None)
         performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
         myPlots.plot_performance(performance)
-        st.markdown('---')
 
-def model_executer_pro(c1, c2):
+def model_executer_pro(start_date, init_investment, list_of_stocks, market_prices, risk_free_rate,  c1, c2):
  
-    # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
-
-    # Initial investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
-
-    # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
-
-    market_prices = cl.return_closed_prices("SPY", start_date).dropna(how="all")
-    
-    risk_free_rate = 0.0163
-    
     if (len(list_of_stocks) > 0): 
         st.markdown('### Data Retrived')
         # Download price data from desired stocks
@@ -237,30 +161,22 @@ def model_executer_pro(c1, c2):
         st.write(dfMarketCap)
         st.markdown('---')
 
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
         st.markdown('### Market-implied risk premium') 
-        # TODO: Hide this st.write for unprofessional users
-        st.write("Every asset in the market portfolio contributes a certain amount of risk to the portfolio. Standard theory suggests that investors must becompensated for the risk that they take, so we can attribute to each asset an expected compensation(i.e prior estimate of returns). This is quantified by the market-implied risk premium, which is the market’s excess return divided by its variance.")
+  
+        st.info("Every asset in the market portfolio contributes a certain amount of risk to the portfolio. Standard theory suggests that investors must becompensated for the risk that they take, so we can attribute to each asset an expected compensation(i.e prior estimate of returns). This is quantified by the market-implied risk premium, which is the market’s excess return divided by its variance.")
         S = risk_models.CovarianceShrinkage(df, frequency=len(index)).ledoit_wolf()
         delta = black_litterman.market_implied_risk_aversion(market_prices, risk_free_rate = risk_free_rate)
-        # TODO: Hide this st.write for unprofessional users
         st.write(delta)
         st.markdown('---')
 
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
         st.markdown("### Covariance Matrix")
         help = "Calculated by using Covariance Shrinkage Ledoit Wolf"
-        # TODO: Hide this st.write for unprofessional users
-        st.write(help)
+
+        st.info(help)
         correlationMatrixCalculated = riskMatrix.map_cov_to_corr(S)
-        # TODO: Hide this st.write for unprofessional users
         st.write(S)
         st.markdown('---')
 
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
         st.markdown("### Correlation Matrix")
         fig1 = go.Figure(data=go.Heatmap(
             z=correlationMatrixCalculated,
@@ -270,24 +186,20 @@ def model_executer_pro(c1, c2):
             type='heatmap',
             colorscale='Viridis'))
 
-        # TODO: Hide this st.plotly for unprofessional users
         st.plotly_chart(fig1)
         st.markdown('---')
 
-        # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
         st.markdown('### Market prior')
-        # TODO: Hide this st.write for unprofessional users
-        st.write("Market prior is market’s estimate of the return, which is embedded into the market capitalisation of the asset. In this case it is calculated by using S&P 500 index for calculating the expected market return rate and FED risk-free rate (currently" + str(risk_free_rate) + ") for calculating the market risk premium. ")
+
+        st.info("Market prior is market’s estimate of the return, which is embedded into the market capitalisation of the asset. In this case it is calculated by using S&P 500 index for calculating the expected market return rate and FED risk-free rate (currently" + str(risk_free_rate) + ") for calculating the market risk premium. ")
         market_prior = black_litterman.market_implied_prior_returns(marketCap, delta, S, risk_free_rate=risk_free_rate)
-        # TODO: Hide this st.write for unprofessional users
         st.write(market_prior)
 
         fig2 = go.Figure(go.Bar(
             x=market_prior,
             y=list_of_stocks,
             orientation='h'))
-        # TODO: Hide this st.plotly for unprofessional users
+
         st.plotly_chart(fig2)
         st.markdown('---')
 
@@ -334,12 +246,9 @@ def model_executer_pro(c1, c2):
 
         st.markdown('---')
 
-         # This markdown is Pro version: ATTENTION: calcualtions should remain in all versions, only presenting of some information should be hide from unprofessional users
-        # TODO: Hide this markdown for unprofessional users
         st.markdown('### Posterior estimates')
-        # TODO: Hide this st.write for unprofessional users
-        st.write("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
-        # We are using the shortcut to automatically compute market-implied prior
+     
+        st.info("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
         bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
         # Posterior estimate of returns
         ret_bl = bl.bl_returns()
@@ -348,12 +257,10 @@ def model_executer_pro(c1, c2):
         # Calculate the posterior estimate of the returns vector, given views on some assets
         rets_df = pd.DataFrame([market_prior, ret_bl, pd.Series(viewdict)],
                                index=["Prior", "Posterior", "Views"]).T
-        # TODO: Hide this st.write for unprofessional users
         st.write(rets_df)
         S_bl = bl.bl_cov()
 
         fig3 = px.histogram(rets_df, x=rets_df.index, y=["Prior", "Posterior", "Views"], barmode='group', labels=dict(x="Companies", y="Estimates", color="Estimates"))
-        # TODO: Hide this st.plotly for unprofessional users
         st.plotly_chart(fig3)
         st.markdown('---')
 
@@ -382,7 +289,6 @@ def model_executer_pro(c1, c2):
         bl.bl_weights(risk_aversion=None)
         performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
         myPlots.plot_performance(performance)
-        st.markdown('---')
 
 
 def share_portfolio(ef, list_of_stocks, c1, c2):
@@ -404,10 +310,11 @@ def identify_user_experience(c1, c2):
         c1.warning('You have to know who you are before we can start ;)')
 
     elif (experience == users[1]):
-        model_executer_newbie(c1, c2)
-
+        newbie_config = get_inputs(c1, c2)
+        model_executer_newbie(newbie_config.get('start_date'), newbie_config.get('init_investment'), newbie_config.get('list_of_stocks'), newbie_config.get('market_prices'), newbie_config.get('risk_free_rate'),  c1, c2)
     else:
-        model_executer_pro(c1, c2)
+        pro_config = get_inputs(c1, c2)
+        model_executer_pro(pro_config.get('start_date'), pro_config.get('init_investment'),pro_config.get('list_of_stocks'), pro_config.get('market_prices'), pro_config.get('risk_free_rate'),  c1, c2)
 
 def bla_setup():
 
