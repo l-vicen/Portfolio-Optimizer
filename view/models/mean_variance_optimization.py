@@ -37,7 +37,7 @@ def stock_search(c1, c2):
 
         list_of_stocks = cl.return_tickers_from_names(tmpListNames)
         
-        st.write(list_of_stocks)
+        st.write(list_of_stocks.tolist())
         return list_of_stocks
 
     else:
