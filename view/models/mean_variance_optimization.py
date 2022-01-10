@@ -116,6 +116,8 @@ def get_inputs_pro(c1, c2):
 
 def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
     
+    c3, c4 = st.columns((2, 1))
+
     if len(list_of_stocks) > 0:
 
         # Save current portfolio
@@ -189,12 +191,12 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         myPlots.plot_performance(ef.portfolio_performance(verbose=True))
 
         # Saving the expected performance from the current portfolio
-        share_portfolio(ef, list_of_stocks, c1, c2)
+        share_portfolio(ef, list_of_stocks, c3, c4)
 
-        c2.info(Descriptions.ANNUAL_VOLATILITY)
-        c2.info(Descriptions.ANNUAL_EXPECTED_RETURN)
-        c2.info(Descriptions.SHARPE_RATIO)
-        
+        c4.info(Descriptions.ANNUAL_VOLATILITY)
+        c4.info(Descriptions.ANNUAL_EXPECTED_RETURN)
+        c4.info(Descriptions.SHARPE_RATIO)
+
         st.markdown('---')
         
         """[PART 5] Discretionizing asset distribution
