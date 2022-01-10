@@ -17,6 +17,8 @@ def plot_performance(tuple, ef, list_of_stock):
     columnB.info(Descriptions.ANNUAL_EXPECTED_RETURN)
     columnB.info(Descriptions.SHARPE_RATIO)
 
+
+    columnA.markdown('---')
     share = ['Dont Share', 'Share Portfolio']
     share_choice = columnA.radio('Let the world know about this Portfolio', share)
 
