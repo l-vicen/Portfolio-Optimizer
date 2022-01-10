@@ -33,10 +33,11 @@ def get_inputs_newbie(c1, c2):
     search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
 
     if (search_choice == search[0]):
-        tmpListNames = c1.multiselect("Selct all tickers you want to have in the portfolio",
+        tmpListNames = c1.multiselect("Selct all companies you want to have in the portfolio",
                                     cl.return_list_tickers_only_names(),
                                     default=googleSheet.load_tickers(),
                                     on_change=googleSheet.change())
+        st.write(tmpListNames)
         list_of_stocks = return_tickers_from_names(tmpListNames)
 
     else:
