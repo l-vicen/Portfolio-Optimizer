@@ -129,14 +129,6 @@ def hrp_setup_ex(c1, c2):
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio"""
 
-        st.markdown('### 4. EXPECTED PERFORMANCE')
-
-        # Show descriptions of the different KPIs
-
-        st.info(Descriptions.ANNUAL_EXPECTED_RETURN)
-        st.info(Descriptions.ANNUAL_VOLATILITY)
-        st.info(Descriptions.SHARPE_RATIO)
-
         # Show calculated KPIs
 
         myPlots.plot_performance(hrp.portfolio_performance(verbose=True))
