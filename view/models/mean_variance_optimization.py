@@ -186,14 +186,10 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         annual volatility and sharpe ratio."""
 
         st.markdown('##### Annual Performance Expectations')
-        myPlots.plot_performance(ef.portfolio_performance(verbose=True), c1, c2)
+        myPlots.plot_performance(ef.portfolio_performance(verbose=True))
 
         # Saving the expected performance from the current portfolio
         share_portfolio(ef, list_of_stocks, c1, c2)
-
-        c2.info(Descriptions.ANNUAL_VOLATILITY)
-        c2.info(Descriptions.ANNUAL_EXPECTED_RETURN)
-        c2.info(Descriptions.SHARPE_RATIO)
 
         st.markdown('---')
         
@@ -325,7 +321,3 @@ def mean_variance_setup():
 
     c2.header('About')
     c2.info(Descriptions.MVO)
-
-
-
-
