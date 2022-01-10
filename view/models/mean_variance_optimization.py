@@ -26,9 +26,7 @@ from inform import Descriptions
 def stock_search_selector(list_of_assets, c1):
 
     list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio",
-                                    list_of_assets,
-                                    default=googleSheet.load_tickers(),
-                                    on_change=googleSheet.change())
+                                    list_of_assets)
 
     return list_of_stocks
 
@@ -120,7 +118,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
     if len(list_of_stocks) > 0:
 
         # Save current portfolio
-        # googleSheet.save_tickers(list_of_stocks)
+        googleSheet.save_tickers(list_of_stocks)
 
         """[PART 0] In this part we retrieve 
         and plot data from yahooFinanace. The
