@@ -28,6 +28,23 @@ from inform import Descriptions
 
 import models_dependencies.google_sheet as googleSheet
 
+def stock_search_selector(list_of_assets, c1):
+    list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio", list_of_assets)
+    return list_of_stocks
+
+def stock_search_ui(c1, c2):
+
+    # List of Stocks
+    search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
+    search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
+
+    if (search_choice == search[0]):
+        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_only_names(), c1)
+        return cl.return_tickers_from_names(list_of_stocks_names)
+        
+    else:
+        return stock_search_selector(cl.return_list_tickers(), c1)
+
 def hrp_setup_ex(c1, c2):
     
     #Amount of money that should be invested 
@@ -37,7 +54,7 @@ def hrp_setup_ex(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+    list_of_stocks = stock_search_ui(c1, c2)
 
     if (len(list_of_stocks) > 0): 
 
@@ -184,7 +201,7 @@ def hrp_setup_nubie(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+    list_of_stocks = stock_search_ui(c1, c2)
 
     if (len(list_of_stocks) > 0): 
 

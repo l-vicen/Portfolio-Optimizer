@@ -4,6 +4,7 @@ from gsheetsdb import connect
 import pandas as pd
 
 from inform import Descriptions
+import plotly.express as px
 
 def display_home():
     st.title('Multi-feature Portfolio Optimizer App (MPOA)')
@@ -34,8 +35,11 @@ def display_home():
 
     df.index += 1
 
-    st.table(df)
+    fig = px.histogram(df, x="Timestamp", color="Method")
+    fig.show()
 
+    st.table(df)
+    st.plotly_chart(fig)  
 
 class Sidebar: 
 
