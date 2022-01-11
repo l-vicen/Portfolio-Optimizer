@@ -38,6 +38,7 @@ def display_home():
         """
     )
 
+    st.markdown('---')
     st.markdown("## Public Dashboard")
 
     conn = connect()
