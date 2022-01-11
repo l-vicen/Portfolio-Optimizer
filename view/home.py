@@ -16,13 +16,17 @@ def display_home():
     col2.header('App Features')
     col2.write(
         """
-        * Fruit
-        * Apple
-        * Orange
-        * Banana
-        * Dairy
-        * Milk
-        * Cheese
+        * Real-Time query of financial data
+        * Different UX & Model Configurations
+        * Portfolio Optimization
+            * Mean-Variance Optimization
+            * Black-Litterman Allocation
+            * Hierarchical Risk Parity
+        * Different Expected Return Calculation Methods
+        * Different Risk Model Calculation Methods
+        * Optimal Portfolio Backtest (% SPY 500)
+        * Optimization Log / Activity Track
+        * Real time project review
         """
     )
 
