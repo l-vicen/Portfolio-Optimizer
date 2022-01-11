@@ -14,7 +14,10 @@ def display_home():
     col1.info(Descriptions.ABOUT)
 
     col2.header('App Features')
-    col2.image('view/assets/coverage.png')
+    col2.write(
+        -   100% Python
+            -   [Google Natural Language API](https://cloud.google.com/natural-language)
+    )
 
     st.markdown("## Public Dashboard")
 
