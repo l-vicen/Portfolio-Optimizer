@@ -15,7 +15,6 @@ def display_home():
 
     col2.header('Algorithmic Coverage')
 
-    # TODO: Public Dashboard implementation goes here 
     st.markdown("## Public Dashboard")
 
     conn = connect()
@@ -38,8 +37,8 @@ def display_home():
     fig = px.histogram(df, x="Timestamp", color="Method")
     fig.show()
 
-    st.table(df)
-    st.plotly_chart(fig)  
+    col1.table(df)
+    col2.plotly_chart(fig)  
 
 class Sidebar: 
 
