@@ -15,8 +15,8 @@ def display_home():
 
     col1.success( 
         """
-        ### Contribute
-        Feel free to improve the current project at:
+        ##### Contribute
+        Feel free to improve the current project at: \
         https://github.com/l-vicen/-WIB06772-PortfolioOptimizer
         """
     )
