@@ -15,8 +15,15 @@ def display_home():
 
     col2.header('App Features')
     col2.write(
-        -   100% Python
-            -   [Google Natural Language API](https://cloud.google.com/natural-language)
+        """
+        * Fruit
+        * Apple
+        * Orange
+        * Banana
+        * Dairy
+        * Milk
+        * Cheese
+        """
     )
 
     st.markdown("## Public Dashboard")
