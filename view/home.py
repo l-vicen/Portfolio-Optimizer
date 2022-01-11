@@ -35,10 +35,13 @@ def display_home():
     df.index += 1
 
     fig = px.histogram(df, x="Timestamp", color="Method")
+    fig.update_layout(title="User Activity over Time", width=850, height=500)
+
     fig.show()
 
-    col1.table(df)
-    col2.plotly_chart(fig)  
+    st.plotly_chart(fig)  
+    st.table(df)
+
 
 class Sidebar: 
 
