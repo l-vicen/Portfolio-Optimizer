@@ -22,7 +22,6 @@ from pypfopt import plotting
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
-import seaborn as sns
 from matplotlib import pyplot as plt
 from inform import Descriptions
 
@@ -183,7 +182,6 @@ def hrp_setup_ex(c1, c2):
         st.markdown('---')
 
         """Part[7]: Backtesting Portfolio vs. SPY"""
-        st.markdown('### 5. Backtesting')
         weightValues = weights.values()
         weightValuesList = list(weightValues)
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
