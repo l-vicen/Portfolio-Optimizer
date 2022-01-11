@@ -6,7 +6,7 @@ import datetime
 
 from inform import Descriptions
 
-def backtesting_setup(start, tickers, allocations):
+def backtesting_setup(start, init_investment, tickers, allocations):
 
     c3, c4= st.columns((2, 1))
 
@@ -17,9 +17,6 @@ def backtesting_setup(start, tickers, allocations):
 
     # End Date 
     end = c3.date_input('End date', datetime.date(2021, 12, 1))
-
-    # Initial investment
-    init_investment = c3.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, key = "backtesting-init-investment")
 
     # Downloading asset prices
     d1 = {}

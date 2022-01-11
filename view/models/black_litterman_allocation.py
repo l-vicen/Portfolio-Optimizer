@@ -8,6 +8,7 @@ import datetime
 
 import models_dependencies.covariances as riskMatrix
 import models_dependencies.google_sheet as googleSheet
+import models.backtesting as backTest
 
 from inform import Descriptions
 
@@ -309,6 +310,9 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
         bl.bl_weights(risk_aversion=None)
         performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
         myPlots.plot_performance(performance)
+
+        """[PART 7] Backtesting Portfolio vs. SPY"""
+        backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
         share_portfolio(performance, list_of_stocks)

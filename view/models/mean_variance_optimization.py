@@ -45,6 +45,9 @@ def get_inputs_newbie(c1, c2):
     # List of Stocks
     list_of_stocks = stock_search_ui(c1, c2)
 
+    # Investment
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
+
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
     
@@ -56,6 +59,7 @@ def get_inputs_newbie(c1, c2):
 
     config_dictionary = dict(); 
     config_dictionary['start_date'] = start_date
+    config_dictionary['init_investment'] = init_investment
     config_dictionary['list_of_stocks'] = list_of_stocks
     config_dictionary['covariance_method_choosen'] = 'Sample Covariance'
     config_dictionary['expected_return_method_choosen'] = 'Mean Historical Return'
@@ -75,6 +79,9 @@ def get_inputs_pro(c1, c2):
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
+
+    # Investment
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
@@ -98,6 +105,7 @@ def get_inputs_pro(c1, c2):
 
     config_dictionary = dict(); 
     config_dictionary['start_date'] = start_date
+    config_dictionary['init_investment'] = init_investment
     config_dictionary['list_of_stocks'] = list_of_stocks
     config_dictionary['covariance_method_choosen'] = covariance_method_choosen
     config_dictionary['expected_return_method_choosen'] = expected_return_method_choosen
@@ -110,7 +118,7 @@ def get_inputs_pro(c1, c2):
     return config_dictionary
 
 
-def model_executer(start_date, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
+def model_executer(start_date, init_investment, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
     
     if len(list_of_stocks) > 0:
 
@@ -190,7 +198,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         st.markdown('### Discrete Allocation')
 
         latest_prices = df.iloc[-1]  # prices as of the day you are allocating
-        discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value=20000, short_ratio=0.3)
+        discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value = init_investment, short_ratio=0.3)
         allocation, leftover = discreteAllocation.lp_portfolio()
         st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
         st.write(allocation)
@@ -268,7 +276,7 @@ def model_executer(start_date, list_of_stocks, covariance_method_choosen, expect
         weightValuesList = list(weightValues)
 
         """[PART 7] Backtesting Portfolio vs. SPY"""
-        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList)
+        backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Saving the expected performance from the current portfolio
         share_portfolio(ef, list_of_stocks)
@@ -295,11 +303,11 @@ def identify_user_experience(c1, c2):
 
     elif (experience == users[1]):
         newbie_config = get_inputs_newbie(c1, c2)
-        model_executer(newbie_config.get('start_date'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), c1, c2)
+        model_executer(newbie_config.get('start_date'), newbie_config.get('init_investment'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), c1, c2)
 
     else:
         pro_config = get_inputs_pro(c1, c2)
-        model_executer(pro_config.get('start_date'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), c1, c2)
+        model_executer(pro_config.get('start_date'), pro_config.get('init_investment'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), c1, c2)
         
 def mean_variance_setup():
 
