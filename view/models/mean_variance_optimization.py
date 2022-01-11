@@ -279,10 +279,16 @@ def model_executer(start_date, init_investment, list_of_stocks, covariance_metho
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Saving the expected performance from the current portfolio
-        share_portfolio(ef, list_of_stocks)
+        share_portfolio(ef,
+                        list_of_stocks,
+                        weightValuesList,
+                        covariance_method_choosen,
+                        expected_return_method_choosen,
+                        objective_function_choosen,
+                        tunning_factor_choosen
+                        )
 
-
-def share_portfolio(ef, list_of_stocks):
+def share_portfolio(ef, list_of_stocks, weightValuesList, covariance_method_choosen=None, expected_return_method_choosen=None, objective_function_choosen=None, tunning_factor_choosen=None):
 
     share = ['Dont Share', 'Share Portfolio']
     share_choice = st.radio('Let the world know about this Portfolio', share)
@@ -290,7 +296,7 @@ def share_portfolio(ef, list_of_stocks):
     if (share_choice == share[0]):
         st.error('Why not let the world benefit from your ideas ? :O')
     else:
-        googleSheet.save_expected_performance(ef.portfolio_performance(), list_of_stocks, "MVO")
+        googleSheet.save_expected_performance_mvo_hra(ef.portfolio_performance(), list_of_stocks, "MVO", weightValuesList, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, tunning_factor_choosen)
         st.success('Success!')
         
 

@@ -42,8 +42,8 @@ def save_tickers(list_of_stocks):
         i += 1
 
 
-# Save expected performance
-def save_expected_performance(expected_performance, tickers, method):
+# Save expected performance (Case MVO or HRA)
+def save_expected_performance_mvo_hra(expected_performance, tickers, method, weightValuesList, covariance_method_choosen=None, expected_return_method_choosen=None, objective_function_choosen=None, tunning_factor_choosen=None):
     sa = gspread.service_account("credentials.json")
     sh = sa.open("Portfolio")
     worksheet = sh.get_worksheet(1)
@@ -56,3 +56,27 @@ def save_expected_performance(expected_performance, tickers, method):
     worksheet.update_cell(l, 4, expected_performance[1])
     worksheet.update_cell(l, 5, expected_performance[2])
     worksheet.update_cell(l, 6, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    worksheet.update_cell(l, 7, covariance_method_choosen)
+    worksheet.update_cell(l, 8, expected_return_method_choosen)
+    worksheet.update_cell(l, 9, objective_function_choosen)
+    worksheet.update_cell(l, 10, tunning_factor_choosen)
+    worksheet.update_cell(l, 13, str(weightValuesList))
+
+
+# Save expected performance (Case BLA)
+def save_expected_performance_bla(expected_performance, tickers, method, absolute_views, view_confidences, weightValuesList):
+    sa = gspread.service_account("credentials.json")
+    sh = sa.open("Portfolio")
+    worksheet = sh.get_worksheet(1)
+
+    l = len(worksheet.col_values(1))+1
+
+    worksheet.update_cell(l, 1, method)
+    worksheet.update_cell(l, 2, str(tickers))
+    worksheet.update_cell(l, 3, expected_performance[0])
+    worksheet.update_cell(l, 4, expected_performance[1])
+    worksheet.update_cell(l, 5, expected_performance[2])
+    worksheet.update_cell(l, 6, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    worksheet.update_cell(l, 11, str(absolute_views))
+    worksheet.update_cell(l, 12, str(view_confidences))
+    worksheet.update_cell(l, 13, str(weightValuesList))

@@ -186,7 +186,7 @@ def hrp_setup_ex(c1, c2):
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
-        share_portfolio(hrp.portfolio_performance(), list_of_stocks)
+        share_portfolio(hrp.portfolio_performance(), list_of_stocks, weightValuesList)
 
 
 def hrp_setup_nubie(c1, c2):
@@ -241,13 +241,15 @@ def hrp_setup_nubie(c1, c2):
         # Plot weights 
         st.bar_chart(pd.Series(weights))
 
-        # show weighs 
+        # show weighs
         st.write(weights)
 
         # Decide whether or not to share
-        share_portfolio(hrp.portfolio_performance(), list_of_stocks)
+        weightValues = weights.values()
+        weightValuesList = list(weightValues)
+        share_portfolio(hrp.portfolio_performance(), list_of_stocks, weightValuesList)
 
-def share_portfolio(hrp_performance, list_of_stocks):
+def share_portfolio(hrp_performance, list_of_stocks, weightValuesList):
 
     share = ['Dont Share', 'Share Portfolio']
     share_choice = st.radio('Let the world know about this Portfolio', share)
@@ -256,7 +258,7 @@ def share_portfolio(hrp_performance, list_of_stocks):
         st.error('Why not let the world benefit from your ideas ? :O')
     else:
         # Saving the expected performance from the current portfolio
-        googleSheet.save_expected_performance(hrp_performance, list_of_stocks, "HRP")
+        googleSheet.save_expected_performance_mvo_hra(hrp_performance, list_of_stocks, "HRP", weightValuesList)
         st.success('Success!')
 
 def identify_user_experience(c1, c2):

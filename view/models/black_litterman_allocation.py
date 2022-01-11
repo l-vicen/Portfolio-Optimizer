@@ -164,7 +164,7 @@ def model_executer_newbie(start_date, init_investment, list_of_stocks, market_pr
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
-        share_portfolio(performance, list_of_stocks)
+        share_portfolio(performance, list_of_stocks, viewdict, confidences, weightValuesList)
 
 def model_executer_pro(start_date, init_investment, list_of_stocks, market_prices, risk_free_rate,  c1, c2):
  
@@ -322,9 +322,9 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
-        share_portfolio(performance, list_of_stocks)
+        share_portfolio(performance, list_of_stocks, viewdict, confidences, weightValuesList)
 
-def share_portfolio(bla_performance, list_of_stocks):
+def share_portfolio(bla_performance, list_of_stocks, viewdict, confidences, weightValuesList):
     share = ['Dont Share', 'Share Portfolio']
     share_choice = st.radio('Let the world know about this Portfolio', share)
 
@@ -332,7 +332,7 @@ def share_portfolio(bla_performance, list_of_stocks):
         st.error('Why not let the world benefit from your ideas ? :O')
     else:
         # Saving the expected performance from the current portfolio
-        googleSheet.save_expected_performance(bla_performance, list_of_stocks, "BLA")
+        googleSheet.save_expected_performance_bla(bla_performance, list_of_stocks, "BLA", viewdict, confidences, weightValuesList)
         st.success('Success!')
 
 def identify_user_experience(c1, c2):
