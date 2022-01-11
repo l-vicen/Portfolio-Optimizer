@@ -13,7 +13,7 @@ def display_home():
     col1.header('About')
     col1.info(Descriptions.ABOUT)
 
-    col2.header('Algorithmic Coverage')
+    col2.header('Demo')
 
     st.markdown("## Public Dashboard")
 
