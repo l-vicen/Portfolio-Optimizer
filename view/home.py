@@ -13,7 +13,8 @@ def display_home():
     col1.header('About')
     col1.info(Descriptions.ABOUT)
 
-    col2.header('Demo')
+    col2.header('App Features')
+    col2.image('view/assets/coverage.png')
 
     st.markdown("## Public Dashboard")
 
