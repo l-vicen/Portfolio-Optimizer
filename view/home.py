@@ -8,7 +8,7 @@ import plotly.express as px
 
 def display_home():
     st.title('Multi-feature Portfolio Optimizer App (MPOA)')
-    col1, col2 = st.columns([1,2])
+    col1, col2 = st.columns([1,1])
 
     col1.header('About')
     col1.markdown(Descriptions.ABOUT)
