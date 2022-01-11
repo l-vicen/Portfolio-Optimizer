@@ -19,6 +19,23 @@ from pypfopt import DiscreteAllocation
 import plotly.graph_objects as go
 import plotly.express as px
 
+def stock_search_selector(list_of_assets, c1):
+    list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio", list_of_assets)
+    return list_of_stocks
+
+def stock_search_ui(c1, c2):
+
+    # List of Stocks
+    search = ['Create Portfolio Using Company Name', 'Create Portfolio Using Tickers']
+    search_choice = c1.radio('Search stock data based on Ticker or Company Name', search)
+
+    if (search_choice == search[0]):
+        list_of_stocks_names = stock_search_selector(cl.return_list_tickers_only_names(), c1)
+        return cl.return_tickers_from_names(list_of_stocks_names)
+        
+    else:
+        return stock_search_selector(cl.return_list_tickers(), c1)
+
 def get_inputs(c1, c2):
 
     # Start Date
@@ -28,7 +45,7 @@ def get_inputs(c1, c2):
     init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
 
     # List of Stocks
-    list_of_stocks = c1.multiselect("Selct all tickers you want to have in the portfolio", cl.return_list_tickers())
+    list_of_stocks = stock_search_ui(c1, c2)
 
     market_prices = cl.return_closed_prices("SPY", start_date).dropna(how="all")
     
