@@ -158,6 +158,9 @@ def model_executer_newbie(start_date, init_investment, list_of_stocks, market_pr
         performance=bl.portfolio_performance(True, risk_free_rate=risk_free_rate)
         myPlots.plot_performance(performance)
 
+        """[PART 7] Backtesting Portfolio vs. SPY"""
+        backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weights)
+
         # Decide whether or not to share
         share_portfolio(performance, list_of_stocks)
 
@@ -312,7 +315,7 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
         myPlots.plot_performance(performance)
 
         """[PART 7] Backtesting Portfolio vs. SPY"""
-        backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
+        backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weights)
 
         # Decide whether or not to share
         share_portfolio(performance, list_of_stocks)
