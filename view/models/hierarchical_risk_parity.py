@@ -47,8 +47,8 @@ def stock_search_ui(c1, c2):
 
 def hrp_setup_ex(c1, c2):
     
-    #Amount of money that should be invested 
-    invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = Descriptions.LIST_PORTFOLIO_HELPER)
+    # Investment
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50,  help = Descriptions.LIST_PORTFOLIO_HELPER)
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
@@ -186,7 +186,7 @@ def hrp_setup_ex(c1, c2):
         st.markdown('### 5. Backtesting')
         weightValues = weights.values()
         weightValuesList = list(weightValues)
-        backTest.backtesting_setup(start_date, list_of_stocks, weightValuesList)
+        backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
         # Decide whether or not to share
         share_portfolio(hrp.portfolio_performance(), list_of_stocks)
@@ -194,9 +194,6 @@ def hrp_setup_ex(c1, c2):
 
 def hrp_setup_nubie(c1, c2):
     
-    #Amount of money that should be invested 
-    invest_cash = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help = Descriptions.LIST_PORTFOLIO_HELPER)
-
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
 
