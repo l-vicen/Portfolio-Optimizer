@@ -43,7 +43,7 @@ def get_inputs(c1, c2):
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
 
     # Initial investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 10000, step = 50)
 
     # List of Stocks
     list_of_stocks = stock_search_ui(c1, c2)
