@@ -13,6 +13,14 @@ def display_home():
     col1.header('About')
     col1.markdown(Descriptions.ABOUT)
 
+    col1.success( 
+        """
+        ### Contribute
+        Feel free to improve the current project at:
+        https://github.com/l-vicen/-WIB06772-PortfolioOptimizer
+        """
+    )
+
     col2.header('App Features')
     col2.info(
         """
