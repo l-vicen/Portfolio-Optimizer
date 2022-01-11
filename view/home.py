@@ -11,10 +11,10 @@ def display_home():
     col1, col2 = st.columns([1,2])
 
     col1.header('About')
-    col1.info(Descriptions.ABOUT)
+    col1.markdown(Descriptions.ABOUT)
 
     col2.header('App Features')
-    col2.write(
+    col2.info(
         """
         * Real-Time query of financial data
         * Different UX & Model Configurations
