@@ -11,8 +11,8 @@ import pandas as pd
 import datetime
 
 from pypfopt import expected_returns
-from pypfopt import expected_returns
 from pypfopt import HRPOpt
+from pypfopt import DiscreteAllocation
 import models.backtesting as backTest
 import models_dependencies.covariances as riskMatrix
 
@@ -63,7 +63,7 @@ def hrp_setup_ex(c1, c2):
         #Historical Adjusted Prices in table form 
 
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
-        st.write(np.log10(df))
+        st.write(df)
 
         st.markdown('---')
 
@@ -71,8 +71,7 @@ def hrp_setup_ex(c1, c2):
 
         #Historical Adjusted Prices in graph form. Please note that a log scale is used 
 
-        st.line_chart(np.log10(df))
-        st.markdown('_*log scale is used_')
+        st.line_chart(df)
 
         st.markdown('---')
 
@@ -170,7 +169,30 @@ def hrp_setup_ex(c1, c2):
 
         st.markdown('---')
 
-        """Part[6]: Spare Porfolio Performance 
+        """ Part[6]: Discret Allocation """
+        st.markdown( '### 4. Discret Allocation' )
+
+        latest_prices = df.iloc[-1]
+        if (latest_prices.values.min() < init_investment):
+            try:
+                st.write( "Last Prices" )
+                st.write( latest_prices )
+                discreteAllocation = DiscreteAllocation(weights, latest_prices, total_portfolio_value=init_investment,
+                                                        short_ratio=0.3)
+                allocation, leftover = discreteAllocation.lp_portfolio()
+                st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
+                data_items = allocation.items()
+                data_list = list(data_items)
+                allocDF = pd.DataFrame(data_list, columns=['Company', 'Stocks in portfolio'])
+                st.write(allocDF)
+            except:
+                st.write("You unfortunately do not have enough money to buy these stocks :(")
+        else:
+            st.write("You unfortunately do not have enough money to buy these stocks :(")
+
+        st.markdown('---')
+
+        """Part[7]: Spare Porfolio Performance 
         Overview based on 3 KPIs: expected return, 
         annual volatility and sharpe ratio"""
 
@@ -180,7 +202,7 @@ def hrp_setup_ex(c1, c2):
 
         st.markdown('---')
 
-        """Part[7]: Backtesting Portfolio vs. SPY"""
+        """Part[8]: Backtesting Portfolio vs. SPY"""
         weightValues = weights.values()
         weightValuesList = list(weightValues)
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
@@ -190,7 +212,9 @@ def hrp_setup_ex(c1, c2):
 
 
 def hrp_setup_nubie(c1, c2):
-    
+
+    init_investment = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help=Descriptions.LIST_PORTFOLIO_HELPER )
+
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
 
@@ -206,7 +230,7 @@ def hrp_setup_nubie(c1, c2):
         #Historical Adjusted Prices in table form 
 
         df = cl.return_closed_prices(list_of_stocks, start_date).dropna(how="all")
-        st.write(np.log10(df))
+        st.write(df)
 
         st.markdown('---')
 
@@ -214,8 +238,7 @@ def hrp_setup_nubie(c1, c2):
 
         #Historical Adjusted Prices in graph form. Please note that a log scale is used 
 
-        st.line_chart(np.log10(df))
-        st.markdown('_*log scale is used_')
+        st.line_chart(df)
 
         st.markdown('---')
 
@@ -248,6 +271,30 @@ def hrp_setup_nubie(c1, c2):
         weightValues = weights.values()
         weightValuesList = list(weightValues)
         share_portfolio(hrp.portfolio_performance(), list_of_stocks, weightValuesList)
+
+        """Part[5]: Discret Distribution"""
+
+        st.markdown( '### Discret Allocation' )
+
+        latest_prices = df.iloc[-1]
+        if (latest_prices.values.min() < init_investment):
+            try:
+                st.write( "Last Prices" )
+                st.write( latest_prices )
+                discreteAllocation = DiscreteAllocation(weights, latest_prices, total_portfolio_value=init_investment,
+                                                        short_ratio=0.3)
+                allocation, leftover = discreteAllocation.lp_portfolio()
+                st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
+                data_items = allocation.items()
+                data_list = list(data_items)
+                allocDF = pd.DataFrame(data_list, columns=['Company', 'Stocks in portfolio'])
+                st.write(allocDF)
+            except:
+                st.write("You unfortunately do not have enough money to buy these stocks :(")
+        else:
+            st.write("You unfortunately do not have enough money to buy these stocks :(")
+
+        st.markdown('---')
 
 def share_portfolio(hrp_performance, list_of_stocks, weightValuesList):
 
