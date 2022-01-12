@@ -18,9 +18,11 @@ def visualize_feedbacks():
 
     # Data Cleaning
     data.columns = ['date', 'overwhelmed', ' ', 'clarity', 'description', 'design', 'performance', 'wouldRecommend',
-                    '1$', '5$', '10$', 'improvements', 'age', 'experience', 'activity', 'gender','futureUse','',"willingnessToPay"]
-    data['overwhelmed'].replace({1: 'Definitely not true', 2: 'Not true', 3: 'Dont know', 4: 'True', 5: 'Definitely true'},
-                                inplace=True)
+                    '1$', '5$', '10$', 'improvements', 'age', 'experience', 'activity', 'gender', 'futureUse', '',
+                    'price']
+    data['overwhelmed'].replace(
+        {1: 'Definitely not true', 2: 'Not true', 3: 'Dont know', 4: 'True', 5: 'Definitely true'},
+        inplace=True)
 
     st.markdown('### I was completely overwhelmed with the app and didn\'t know what to do.')
     input = {'Definitely not true': len(data[data['overwhelmed'] == 'Definitely not true']), 'Not true': len(data[data['overwhelmed'] == 'Not true']), 'Dont know': len(data[data['overwhelmed'] == 'Dont know']),
@@ -61,7 +63,11 @@ def visualize_feedbacks():
     st.plotly_chart(fig)
     st.markdown('---')
 
-
+    st.markdown('### How much would you be willing to pay for using this app?')
+    input = data['price']
+    fig = px.histogram(input, x='price')
+    st.plotly_chart(fig)
+    st.markdown('---')
 
 
 
