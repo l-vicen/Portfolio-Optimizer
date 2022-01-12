@@ -61,6 +61,15 @@ def visualize_feedbacks():
     st.plotly_chart(fig)
     st.markdown('---')
 
+    st.markdown('### How much would you be willing to pay for using this app?')
+    input = data['How much would you be willing to pay for using this app?']
+
+    fig = px.histogram(input,x="Price")
+    st.plotly_chart(fig)
+    st.markdown('---')
+
+
+
     st.markdown('### Age')
     labels = '<25', '25-40', '40-60', '60+'
     sizes = [len(data[data['age'] == '<25']), len(data[data['age'] == '25-40']), len(data[data['age'] == '40-60']),
