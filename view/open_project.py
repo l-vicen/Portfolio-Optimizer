@@ -18,7 +18,7 @@ def visualize_feedbacks():
 
     # Data Cleaning
     data.columns = ['date', 'overwhelmed', ' ', 'clarity', 'description', 'design', 'performance', 'wouldRecommend',
-                    '1$', '5$', '10$', 'improvements', 'age', 'experience', 'activity', 'gender','futureUse']
+                    '1$', '5$', '10$', 'improvements', 'age', 'experience', 'activity', 'gender','futureUse','',"willingnessToPay"]
     data['overwhelmed'].replace({1: 'Definitely not true', 2: 'Not true', 3: 'Dont know', 4: 'True', 5: 'Definitely true'},
                                 inplace=True)
 
