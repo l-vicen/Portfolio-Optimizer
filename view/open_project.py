@@ -61,12 +61,7 @@ def visualize_feedbacks():
     st.plotly_chart(fig)
     st.markdown('---')
 
-    st.markdown('### How much would you be willing to pay for using this app?')
-    input = data['How much would you be willing to pay for using this app?']
 
-    fig = px.histogram(input,x="Price")
-    st.plotly_chart(fig)
-    st.markdown('---')
 
 
 
