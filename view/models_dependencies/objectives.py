@@ -1,7 +1,7 @@
 from pypfopt import EfficientFrontier
 from pypfopt import objective_functions
 
-def calculate_asset_distribution_according_to(method, regularization, tunning_factor,expected_returns, covariance_matrix):
+def calculate_asset_distribution_according_to(method, regularization, tunning_factor, expected_returns, covariance_matrix, target_return, target_risk):
 
     if (method == "Minimize Volatility"):
         efficientFrontier = EfficientFrontier(expected_returns, covariance_matrix)
@@ -44,7 +44,7 @@ def calculate_asset_distribution_according_to(method, regularization, tunning_fa
         else:
             pass
 
-        efficientFrontier.efficient_risk()
+        efficientFrontier.efficient_risk(target_risk)
         return efficientFrontier
 
     else:
@@ -55,5 +55,5 @@ def calculate_asset_distribution_according_to(method, regularization, tunning_fa
         else:
             pass
 
-        efficientFrontier.efficient_return()
+        efficientFrontier.efficient_return(target_return)
         return efficientFrontier

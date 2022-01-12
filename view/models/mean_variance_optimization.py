@@ -54,7 +54,7 @@ def get_inputs_newbie(c1, c2):
     c1.warning('Default Methods used: Mean Historical Return & Sample Covariance')
 
     # Pick Objective Functions
-    objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
+    objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility"]
     objective_function_choosen = c1.selectbox("What is your optimization objective?", objective_functions)
 
     config_dictionary = dict(); 
@@ -95,8 +95,18 @@ def get_inputs_pro(c1, c2):
     objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
     objective_function_choosen = c1.selectbox("What is your optimization objective?", objective_functions)
 
+    if (objective_function_choosen == "Efficient Risk"):
+        target_volatility = c1.slider("What is the target risk?", min_value=0.0, max_value=1.0, help=Descriptions.TARGET_RISK)
+    else: 
+        target_volatility = 0
+    
+    if (objective_function_choosen == "Efficient Return"):
+        target_return =  c1.slider("What is the target risk?", min_value=0.0, max_value=1.0, help=Descriptions.TARGET_RISK)
+    else:
+        target_return = 0
+
     regularization_options = ["Yes", "No"]
-    add_regularization = c1.select_slider("Shoult the optimization have L2 Regularization?", regularization_options, value = "No", help=Descriptions.L2_REGULARIZATION_HELPER)
+    add_regularization = c1.select_slider("Should the optimization have L2 Regularization?", regularization_options, value = "No", help=Descriptions.L2_REGULARIZATION_HELPER)
 
     if (add_regularization == "Yes"):
         tunning_factor_choosen = c1.slider("Choose L2 Tunning Factor", min_value=0.1, max_value=1.0)
@@ -112,13 +122,15 @@ def get_inputs_pro(c1, c2):
     config_dictionary['objective_function_choosen'] = objective_function_choosen
     config_dictionary['add_regularization'] = add_regularization
     config_dictionary['tunning_factor_choosen'] = tunning_factor_choosen
+    config_dictionary['target_volatility'] = target_volatility
+    config_dictionary['target_return'] = target_return
 
     st.markdown('---')
 
     return config_dictionary
 
 
-def model_executer(start_date, init_investment, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, c1, c2):
+def model_executer(start_date, init_investment, list_of_stocks, covariance_method_choosen, expected_return_method_choosen, objective_function_choosen, add_regularization, tunning_factor_choosen, target_return, target_volatility, c1, c2):
     
     if len(list_of_stocks) > 0:
 
@@ -178,7 +190,7 @@ def model_executer(start_date, init_investment, list_of_stocks, covariance_metho
 
         st.markdown('### Asset Distribution')
 
-        ef = objective.calculate_asset_distribution_according_to(objective_function_choosen, add_regularization, tunning_factor_choosen ,expected_returns = expectedReturnCalculated, covariance_matrix = covarianceMatrixCalculated)
+        ef = objective.calculate_asset_distribution_according_to(objective_function_choosen, add_regularization, tunning_factor_choosen ,expected_returns = expectedReturnCalculated, covariance_matrix = covarianceMatrixCalculated, target_return = target_return, target_risk = target_volatility)
 
         asset_distribution = ef.clean_weights()
         st.write(asset_distribution)
@@ -322,11 +334,11 @@ def identify_user_experience(c1, c2):
 
     elif (experience == users[1]):
         newbie_config = get_inputs_newbie(c1, c2)
-        model_executer(newbie_config.get('start_date'), newbie_config.get('init_investment'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), c1, c2)
+        model_executer(newbie_config.get('start_date'), newbie_config.get('init_investment'), newbie_config.get('list_of_stocks'), newbie_config.get('covariance_method_choosen'), newbie_config.get('expected_return_method_choosen'), newbie_config.get('objective_function_choosen'), newbie_config.get('add_regularization'), newbie_config.get('tunning_factor_choosen'), 0, 0, c1, c2)
 
     else:
         pro_config = get_inputs_pro(c1, c2)
-        model_executer(pro_config.get('start_date'), pro_config.get('init_investment'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), c1, c2)
+        model_executer(pro_config.get('start_date'), pro_config.get('init_investment'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), pro_config.get('target_volatility'), pro_config.get('target_return'), c1, c2)
         
 def mean_variance_setup():
 

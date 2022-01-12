@@ -20,6 +20,8 @@ class Descriptions:
 
     INITIAL_INVESTMENT_HELPER = 'Please insert the value of your investment in US-Dollar. '
 
+    TARGET_RISK = 'The resulting portfolio will have a volatility less than the target (but not guaranteed to be equal).'
+
     # COVARIANCES
 
     GEN_COVARIANCE = ' A covariance measures the strength and direction of a relationship between two assets. A positive covariance means that asset A and B move together. A negative covariance means that they move in opposite directions. ' \
