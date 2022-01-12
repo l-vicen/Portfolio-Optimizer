@@ -21,7 +21,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 def stock_search_selector(list_of_assets, c1):
-    list_of_stocks = c1.multiselect("Select all companies you want to have in your portfolio", list_of_assets)
+    list_of_stocks = c1.multiselect("Select all companies (AT LEAST TWO) you want to have in your portfolio", list_of_assets)
     return list_of_stocks
 
 def stock_search_ui(c1, c2):

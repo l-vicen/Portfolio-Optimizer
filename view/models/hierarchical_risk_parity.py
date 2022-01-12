@@ -215,7 +215,7 @@ def hrp_setup_ex(c1, c2):
 
 def hrp_setup_nubie(c1, c2):
 
-    init_investment = c1.number_input('Purchase Power', min_value=10, max_value=100000000, value=10, step=50, help=Descriptions.INITIAL_INVESTMENT_HELPER)
+    init_investment = c1.number_input('Purchase Power', min_value=1000, max_value=100000000, value=1000, step=50, help=Descriptions.INITIAL_INVESTMENT_HELPER)
 
     # Start Date
     start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help = "Please select the start date from which you want to download the data ")
