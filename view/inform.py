@@ -65,7 +65,7 @@ class Descriptions:
 
     BLA_CONFIDENCE_VIEW = 'Insert your confidence in your view. If you are 20% confident of your view, type in 0,2. '
 
-    HRP = 'The Hierarchical Risk Parity is novel portfolio optimization technique published by Lopez de Prado. It provides a more diversified, less risky portfolio than Black-Litterman and MVO. '
+    HRP = 'The Hierarchical Risk Parity is novel portfolio optimization technique published by Lopez de Prado. It was developed to overcome instability, corner-solutions and underperformance of quadratic optimizers like MVO.'
 
     HRP_TREE_CLUSTERING = 'Investments are split into two groups based on their correlation matrix. This step is repeated over and over again until every investment asset has its own branch. The algorithm breaks down the portfolio’s assets into different hierarchical clusters.'
 
