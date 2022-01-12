@@ -16,6 +16,10 @@ class Descriptions:
 
     L2_REGULARIZATION_HELPER = 'Mean Variance Optimisation(MVO)  may only select a small number of assets out of a large portfolio. This can conflict with a well-diversified portfolio. The L2 regularization adds a “small weights penalty” to stop the optimizer from overfitting.'
 
+    START_DATE_HELPER = 'Please enter the starting date of data collection here. The model will use this data to optimize the portfolio. '
+
+    INITIAL_INVESTMENT_HELPER = 'Please insert the value of your investment in US-Dollar. '
+
     # COVARIANCES
 
     GEN_COVARIANCE = ' A covariance measures the strength and direction of a relationship between two assets. A positive covariance means that asset A and B move together. A negative covariance means that they move in opposite directions. ' \
@@ -88,5 +92,6 @@ class Descriptions:
 
     SHARPE_RATIO = 'The Sharpe ratio is an index for the performance of the portfolio. A positive Sharpe ratio indicates the outperformance of the portfolio over the risk-free-return . ' \
                    'It is defined as the risk-free return subtracted from the expected return divided by the risk (standard deviation) of the returns.'
+
 
 descriptions = Descriptions()

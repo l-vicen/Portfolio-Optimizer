@@ -46,10 +46,10 @@ def get_inputs_newbie(c1, c2):
     list_of_stocks = stock_search_ui(c1, c2)
 
     # Investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 10000, step = 50)
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 10000, step = 50,  help=Descriptions.INITIAL_INVESTMENT_HELPER)
 
     # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help=Descriptions.START_DATE_HELPER)
     
     c1.warning('Default Methods used: Mean Historical Return & Sample Covariance')
 
@@ -78,25 +78,25 @@ def get_inputs_pro(c1, c2):
     list_of_stocks = stock_search_ui(c1, c2)
 
     # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help="deine mutter")
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1), help=Descriptions.START_DATE_HELPER)
 
     # Investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50)
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 1000, step = 50, help=Descriptions.INITIAL_INVESTMENT_HELPER)
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
-    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods, help = "e.g. AAPL for Apple Inc.")
+    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods, help = Descriptions.EXP_RETURN_HELPER)
 
     # Expected Return Method
     expected_returns_methods = ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"]
-    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods, help = "")
+    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods, help = Descriptions.COVARIANCE_HELPER)
 
     # Pick Objective Functions
     objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
     objective_function_choosen = c1.selectbox("What is your optimization objective?", objective_functions)
 
     regularization_options = ["Yes", "No"]
-    add_regularization = c1.select_slider("Shoult the optimization have L2 Regularization?", regularization_options, value = "No")
+    add_regularization = c1.select_slider("Shoult the optimization have L2 Regularization?", regularization_options, value = "No", help=Descriptions.L2_REGULARIZATION_HELPER)
 
     if (add_regularization == "Yes"):
         tunning_factor_choosen = c1.slider("Choose L2 Tunning Factor", min_value=0.1, max_value=1.0)
@@ -197,11 +197,24 @@ def model_executer(start_date, init_investment, list_of_stocks, covariance_metho
 
         st.markdown('### Discrete Allocation')
 
-        latest_prices = df.iloc[-1]  # prices as of the day you are allocating
-        discreteAllocation = DiscreteAllocation(asset_distribution, latest_prices, total_portfolio_value = init_investment, short_ratio=0.3)
-        allocation, leftover = discreteAllocation.lp_portfolio()
-        st.write(f"Discrete allocation performed with ${leftover:.2f} leftover")
-        st.write(allocation)
+        latest_prices = df.iloc[-1]
+        if (latest_prices.values.min() < init_investment):
+            try:
+                st.write( "Last Prices" )
+                st.write( latest_prices )
+                discreteAllocation = DiscreteAllocation( asset_distribution, latest_prices,
+                                                         total_portfolio_value=init_investment, short_ratio=0.3 )
+                allocation, leftover = discreteAllocation.lp_portfolio()
+                st.write( f"Discrete allocation performed with ${leftover:.2f} leftover" )
+                data_items = allocation.items()
+                data_list = list( data_items )
+                allocDF = pd.DataFrame( data_list, columns=['Company', 'Stocks in portfolio'] )
+                st.write( allocDF )
+            except:
+                st.write( "You unfortunately do not have enough money to buy these stocks :(" )
+        else:
+            st.write( "You unfortunately do not have enough money to buy these stocks :(" )
+        st.markdown( '---' )
 
          
         """[PART 6] Plotting simulated portfolios"""

@@ -40,10 +40,10 @@ def stock_search_ui(c1, c2):
 def get_inputs(c1, c2):
 
     # Start Date
-    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1))
+    start_date = c1.date_input('Start date', datetime.date(2020, 1, 1),help=Descriptions.START_DATE_HELPER)
 
     # Initial investment
-    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 10000, step = 50)
+    init_investment = c1.number_input('Initial Investment', min_value = 10, max_value = 100000000, value = 10000, step = 50,help=Descriptions.INITIAL_INVESTMENT_HELPER)
 
     # List of Stocks
     list_of_stocks = stock_search_ui(c1, c2)
@@ -144,12 +144,23 @@ def model_executer_newbie(start_date, init_investment, list_of_stocks, market_pr
         st.markdown('---')
 
         st.markdown('### Discrete allocation')
-        da = DiscreteAllocation(weights, df.iloc[-1], total_portfolio_value=init_investment)
-        alloc, leftover = da.lp_portfolio()
-        data_items = alloc.items()
-        data_list = list(data_items)
-        allocDF = pd. DataFrame(data_list, columns = ['Company', 'Stocks in portfolio'])
-        st.write(allocDF)
+        latest_prices = df.iloc[-1]
+        if (latest_prices.values.min() < init_investment):
+            try:
+                st.write( "Last Prices" )
+                st.write( latest_prices )
+                discreteAllocation = DiscreteAllocation( weights, latest_prices, total_portfolio_value=init_investment,
+                                                         short_ratio=0.3 )
+                allocation, leftover = discreteAllocation.lp_portfolio()
+                st.write( f"Discrete allocation performed with ${leftover:.2f} leftover" )
+                data_items = allocation.items()
+                data_list = list( data_items )
+                allocDF = pd.DataFrame( data_list, columns=['Company', 'Stocks in portfolio'] )
+                st.write( allocDF )
+            except:
+                st.write( "You unfortunately do not have enough money to buy these stocks :(" )
+        else:
+            st.write( "You unfortunately do not have enough money to buy these stocks :(" )
         st.write(f"Leftover: ${leftover:.2f}")
         st.markdown('---')
 
@@ -274,7 +285,7 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
 
         st.markdown('### Posterior estimates')
      
-        st.info("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case).")
+        st.info("The posterior estimates are the actual outputs of the Black-Litterman. They can be then used as an input for an optimizer  (Efficient Frontier in this case). Posterioir estimates are expected returns: market expected returns are adjusted by using investors´views and confidences.")
         bl = BlackLittermanModel(S, pi="market", market_caps=marketCap, risk_aversion=delta, absolute_views=viewdict, omega=omega)
         # Posterior estimate of returns
         ret_bl = bl.bl_returns()
@@ -302,13 +313,25 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
         st.markdown('---')
 
         st.markdown('### Discrete allocation')
-        da = DiscreteAllocation(weights, df.iloc[-1], total_portfolio_value=init_investment)
-        alloc, leftover = da.lp_portfolio()
-        data_items = alloc.items()
-        data_list = list(data_items)
-        allocDF = pd. DataFrame(data_list, columns = ['Company', 'Stocks in portfolio'])
-        st.write(allocDF)
-        st.write(f"Leftover: ${leftover:.2f}")
+        latest_prices = df.iloc[-1]
+
+        if (latest_prices.values.min() < init_investment):
+            try:
+                st.write( "Last Prices" )
+                st.write( latest_prices )
+                discreteAllocation = DiscreteAllocation( weights, latest_prices, total_portfolio_value=init_investment,
+                                                         short_ratio=0.3 )
+                allocation, leftover = discreteAllocation.lp_portfolio()
+                st.write( f"Discrete allocation performed with ${leftover:.2f} leftover" )
+                data_items = allocation.items()
+                data_list = list( data_items )
+                allocDF = pd.DataFrame( data_list, columns=['Company', 'Stocks in portfolio'] )
+                st.write( allocDF )
+            except:
+                st.write( "You unfortunately do not have enough money to buy these stocks :(" )
+            else:
+                st.write( "You unfortunately do not have enough money to buy these stocks :(" )
+
         st.markdown('---')
 
         st.markdown('### Portfolio performance')

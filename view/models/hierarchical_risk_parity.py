@@ -207,6 +207,8 @@ def hrp_setup_ex(c1, c2):
         weightValuesList = list(weightValues)
         backTest.backtesting_setup(start_date, init_investment, list_of_stocks, weightValuesList)
 
+        st.markdown( '---' )
+
         # Decide whether or not to share
         share_portfolio(hrp.portfolio_performance(), list_of_stocks, weightValuesList)
 
@@ -267,14 +269,9 @@ def hrp_setup_nubie(c1, c2):
         # show weighs
         st.write(weights)
 
-        # Decide whether or not to share
-        weightValues = weights.values()
-        weightValuesList = list(weightValues)
-        share_portfolio(hrp.portfolio_performance(), list_of_stocks, weightValuesList)
-
         """Part[5]: Discret Distribution"""
 
-        st.markdown( '### Discret Allocation' )
+        st.markdown('### Discret Allocation')
 
         latest_prices = df.iloc[-1]
         if (latest_prices.values.min() < init_investment):
@@ -295,6 +292,12 @@ def hrp_setup_nubie(c1, c2):
             st.write("You unfortunately do not have enough money to buy these stocks :(")
 
         st.markdown('---')
+
+        # Decide whether or not to share
+        weightValues = weights.values()
+        weightValuesList = list(weightValues)
+        share_portfolio(hrp.portfolio_performance(), list_of_stocks, weightValuesList)
+
 
 def share_portfolio(hrp_performance, list_of_stocks, weightValuesList):
 
