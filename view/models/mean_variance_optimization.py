@@ -96,7 +96,7 @@ def get_inputs_pro(c1, c2):
     objective_function_choosen = c1.selectbox("What is your optimization objective?", objective_functions)
 
     if (objective_function_choosen == "Efficient Risk"):
-        target_volatility = c1.slider("What is the target risk?", min_value=0.226, max_value=1.0, help=Descriptions.TARGET_RISK)
+        target_volatility = c1.slider("What is the target risk?", min_value=0.3, max_value=1.0, help=Descriptions.TARGET_RISK)
     else: 
         target_volatility = 0
     
