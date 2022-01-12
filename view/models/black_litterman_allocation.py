@@ -161,7 +161,6 @@ def model_executer_newbie(start_date, init_investment, list_of_stocks, market_pr
                 st.write( "You unfortunately do not have enough money to buy these stocks :(" )
         else:
             st.write( "You unfortunately do not have enough money to buy these stocks :(" )
-        st.write(f"Leftover: ${leftover:.2f}")
         st.markdown('---')
 
         st.markdown('### Portfolio performance')
@@ -329,8 +328,8 @@ def model_executer_pro(start_date, init_investment, list_of_stocks, market_price
                 st.write( allocDF )
             except:
                 st.write( "You unfortunately do not have enough money to buy these stocks :(" )
-            else:
-                st.write( "You unfortunately do not have enough money to buy these stocks :(" )
+        else:
+            st.write( "You unfortunately do not have enough money to buy these stocks :(" )
 
         st.markdown('---')
 
