@@ -85,11 +85,11 @@ def get_inputs_pro(c1, c2):
 
     # Select how to perform the MVO
     covariance_methods = ["Sample Covariance", "Semi Covariance", "Exponentially-weighted Covariance", "Covariance Schrinkage: Ledoit Wolf", "Covariance Schrinkage: Ledoit Wolf Costant Variance", "Covariance Schrinkage: Ledoit Wolf Single Factor", "Covariance Schrinkage: Ledoit Wolf Constant Correlation", "Covariance Schrinkage: Oracle Approximation"]
-    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods, help = Descriptions.EXP_RETURN_HELPER)
+    covariance_method_choosen = c1.selectbox("How should the covariance be calculated?", covariance_methods, help = Descriptions.COVARIANCE_HELPER)
 
     # Expected Return Method
     expected_returns_methods = ["Mean Historical Return", "Exponential Moving Average", "CAPM Return"]
-    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods, help = Descriptions.COVARIANCE_HELPER)
+    expected_return_method_choosen = c1.selectbox("How should the expected return be calculated?", expected_returns_methods, help = Descriptions.EXP_RETURN_HELPER)
 
     # Pick Objective Functions
     objective_functions = ["Minimize Volatility", "Maximize Sharpe Ratio", "Maximize Quadratic Utility", "Efficient Risk", "Efficient Return"]
@@ -101,7 +101,7 @@ def get_inputs_pro(c1, c2):
         target_volatility = 0
     
     if (objective_function_choosen == "Efficient Return"):
-        target_return =  c1.slider("What is the target return?", min_value=0.0, max_value=1.0, help=Descriptions.TARGET_RISK)
+        target_return =  c1.slider("What is the target return?", min_value=0.0, max_value=1.0, help=Descriptions.TARGET_RETURN)
     else:
         target_return = 0
 
