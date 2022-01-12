@@ -65,7 +65,7 @@ def display_home():
 
     fig.show()
 
-    col3.plotly_chart(fig) 
+    st.plotly_chart(fig) 
     col4.info(Descriptions.PUBLIC_DASHBOARD)
     st.table(df)
 
