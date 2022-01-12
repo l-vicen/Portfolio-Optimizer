@@ -66,6 +66,8 @@ def display_home():
     st.plotly_chart(fig)  
     st.table(df)
 
+    col2.info(Descriptions.PUBLIC_DASHBOARD)
+
 
 class Sidebar: 
 
