@@ -338,7 +338,7 @@ def identify_user_experience(c1, c2):
 
     else:
         pro_config = get_inputs_pro(c1, c2)
-        model_executer(pro_config.get('start_date'), pro_config.get('init_investment'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), pro_config.get('target_volatility'), pro_config.get('target_return'), c1, c2)
+        model_executer(pro_config.get('start_date'), pro_config.get('init_investment'), pro_config.get('list_of_stocks'), pro_config.get('covariance_method_choosen'), pro_config.get('expected_return_method_choosen'), pro_config.get('objective_function_choosen'), pro_config.get('add_regularization') ,pro_config.get('tunning_factor_choosen'), pro_config.get('target_return'), pro_config.get('target_volatility'), c1, c2)
         
 def mean_variance_setup():
 
