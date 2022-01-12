@@ -226,7 +226,6 @@ def model_executer(start_date, init_investment, list_of_stocks, covariance_metho
                 st.write( "You unfortunately do not have enough money to buy these stocks :(" )
         else:
             st.write( "You unfortunately do not have enough money to buy these stocks :(" )
-        st.markdown( '---' )
 
          
         """[PART 6] Plotting simulated portfolios"""
