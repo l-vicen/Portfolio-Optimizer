@@ -17,8 +17,8 @@ def visualize_feedbacks():
     data = pd.read_csv(sheet_url)
 
     # Data Cleaning
-    data.columns = ['date', 'overwhelmed', 'futureUse', 'clarity', 'description', 'design', 'performance', 'wouldRecommend',
-                    '1$', '5$', '10$', 'improvements', 'age', 'experience', 'activity', 'gender']
+    data.columns = ['date', 'overwhelmed', ' ', 'clarity', 'description', 'design', 'performance', 'wouldRecommend',
+                    '1$', '5$', '10$', 'improvements', 'age', 'experience', 'activity', 'gender','futureUse']
     data['overwhelmed'].replace({1: 'Definitely not true', 2: 'Not true', 3: 'Dont know', 4: 'True', 5: 'Definitely true'},
                                 inplace=True)
 
