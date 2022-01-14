@@ -1,5 +1,4 @@
 # Dependencies
-from turtle import width
 import streamlit as st
 from gsheetsdb import connect
 import pandas as pd
@@ -62,7 +61,7 @@ def display_home():
     col3, col4 = st.columns([1,1])
 
     fig = px.histogram(df, x="Timestamp", color="Method")
-    fig.update_layout(title="User Activity over Time", width=500,height=500)
+    fig.update_layout(title="User Activity over Time", width=850, height=500)
 
     fig.show()
 
