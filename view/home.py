@@ -65,7 +65,7 @@ def display_home():
 
     fig.show()
 
-    col3.markdown('### User Acivity over Time')
+    col3.markdown('### User Activity over Time')
     col3.plotly_chart(fig) 
 
     col4.markdown('### Mapping Portfolios Generated')
