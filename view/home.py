@@ -1,4 +1,5 @@
 # Dependencies
+from turtle import width
 import streamlit as st
 from gsheetsdb import connect
 import pandas as pd
@@ -65,7 +66,7 @@ def display_home():
 
     fig.show()
 
-    st.plotly_chart(fig) 
+    col3.plotly_chart(fig, width=300) 
     col4.info(Descriptions.PUBLIC_DASHBOARD)
     st.table(df)
 
