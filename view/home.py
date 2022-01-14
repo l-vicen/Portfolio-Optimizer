@@ -62,11 +62,11 @@ def display_home():
     col3, col4 = st.columns([1,1])
 
     fig = px.histogram(df, x="Timestamp", color="Method")
-    fig.update_layout(title="User Activity over Time")
+    fig.update_layout(title="User Activity over Time", width=500,height=500)
 
     fig.show()
 
-    col3.plotly_chart(fig, width=300) 
+    col3.plotly_chart(fig) 
     col4.info(Descriptions.PUBLIC_DASHBOARD)
     st.table(df)
 
